@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
-* Студент: [Salavat Imaev](https://up.htmlacademy.ru/javascript/25/user/1332863).
-* Наставник: `Неизвестно`.
+* Студент: [Salavat Imaev](https://htmlacademy.ru/profile/id1332863).
+* Наставник: [Artem Rudov](https://htmlacademy.ru/profile/artrudov).
 
 ---
 
