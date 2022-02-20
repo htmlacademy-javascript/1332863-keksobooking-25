@@ -12,6 +12,7 @@ const getRandomFloat = (firstNumber, secondNumber, decimals) => {
   const min = firstNumber > secondNumber ? secondNumber : firstNumber;
 
   const intermediateResult = +(Math.random() * (max - min + 1) + min).toFixed(decimals);
+
   return intermediateResult > max ? max : intermediateResult;
 };
 
