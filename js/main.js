@@ -13,7 +13,7 @@ const getRandomFloat = (firstNumber, secondNumber, decimals) => {
 
   const intermediateResult = +(Math.random() * (max - min + 1) + min).toFixed(decimals);
 
-  return intermediateResult > max ? +(max.toFixed(decimals).toString()) : intermediateResult;
+  return intermediateResult > max ? +max.toFixed(decimals).toString() : +intermediateResult.toString();
 };
 
 getRandomFloat(3.14151234231423, 1.123, 10);
