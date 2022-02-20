@@ -8,12 +8,12 @@ const getRandomInt = (firstNumber, secondNumber) => {
 getRandomInt(10, 20);
 
 const getRandomFloat = (firstNumber, secondNumber, decimals) => {
-  const max = firstNumber < secondNumber ? secondNumber : firstNumber;
-  const min = firstNumber > secondNumber ? secondNumber : firstNumber;
+  const max = Math.max(firstNumber, secondNumber);
+  const min = Math.min(firstNumber, secondNumber);
 
-  const intermediateResult = +(Math.random() * (max - min + 1) + min).toFixed(decimals).toString();
+  const intermediateResult = Math.random() * (max - min + 1) + min;
 
-  return intermediateResult > max ? +max.toFixed(decimals).toString() : intermediateResult;
+  return Number(Math.min(intermediateResult, max).toFixed(decimals).toString());
 };
 
 getRandomFloat(3.123456789123, 1.123, 10);
