@@ -1,21 +1,18 @@
-// eslint-disable-next-line strict
-'use strict';
+const getRandomInt = (firstNumber, secondNumber) => {
+  const max = firstNumber < secondNumber ? secondNumber : firstNumber;
+  const min = firstNumber > secondNumber ? secondNumber : firstNumber;
 
-const getRandomInt = (num1, num2) => {
-  if (num1 > num2) {
-    return Math.floor(Math.random() * (num1 - num2 + 1) + num2);
-  }
-  return Math.floor(Math.random() * (num2 - num1 + 1) + num1);
+  return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 getRandomInt(10, 20);
 
+const getRandomFloat = (firstNumber, secondNumber, decimals) => {
+  const max = firstNumber < secondNumber ? secondNumber : firstNumber;
+  const min = firstNumber > secondNumber ? secondNumber : firstNumber;
 
-const getRandomFloat = (num1, num2, decimals) => {
-  if (num1 > num2) {
-    return +(Math.random() * (num1 - num2) + num2).toFixed(decimals);
-  }
-  return +(Math.random() * (num2 - num1) + num1).toFixed(decimals);
+  const intermediateResult = +(Math.random() * (max - min + 1) + min).toFixed(decimals);
+  return intermediateResult > max ? max : intermediateResult;
 };
 
-getRandomFloat(3.1415, 0, 10);
+getRandomFloat(3.1415, 0, 4);
