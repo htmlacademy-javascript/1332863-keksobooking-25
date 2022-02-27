@@ -70,3 +70,6 @@ const createSimilarAd = () => ({
 });
 
 const similarAds = Array.from({length: SIMILAR_AD_COUNT}, createSimilarAd);
+
+const someFunc = () => similarAds ;
+someFunc(); // Временное решение, для того чтобы задействовать переменную similarAds и угомонить ESlint.
