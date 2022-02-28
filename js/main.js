@@ -66,6 +66,7 @@ const getUniqueImgNumber = () => {
 
 const creatUniqueArray = (array) => {
   const features = array.slice();
+
   return features.slice(0, getRandomInt(1, features.length - 1));
 };
 
