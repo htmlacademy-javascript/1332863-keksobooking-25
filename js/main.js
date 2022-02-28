@@ -1,5 +1,11 @@
 const SIMILAR_AD_COUNT = 10;
 const MINIMUM_TWO_DIGIT_NUMBER = 10;
+const MINIMUM_ROOM_NUMBERS = 1;
+const MAXIMUM_ROOM_NUMBERS = 50;
+const MINIMUM_GUESTS_NUMBERS = 1;
+const MAXIMUM_GUESTS_NUMBERS = 50;
+const MINIMUM_PRICE = 100;
+const MAXIMUM_PRICE = 100000;
 
 const TYPE_OF_HOUSING = [
   'palace',
@@ -77,10 +83,10 @@ const createSimilarAd = () => ({
   offer: {
     title: 'title',
     address: `${getRandomFloat(35.65000, 35.70000, 5)}, ${getRandomFloat(139.70000, 139.80000, 5)}`,
-    price: getRandomInt(10, 50000),
+    price: getRandomInt(MINIMUM_PRICE, MAXIMUM_PRICE),
     type: TYPE_OF_HOUSING[getRandomIndex(TYPE_OF_HOUSING)],
-    rooms: getRandomInt(1, 50),
-    guests: getRandomInt(1, 50),
+    rooms: getRandomInt(MINIMUM_ROOM_NUMBERS, MAXIMUM_ROOM_NUMBERS),
+    guests: getRandomInt(MINIMUM_GUESTS_NUMBERS, MAXIMUM_GUESTS_NUMBERS),
     checkin: CHECKIN_TIME[getRandomIndex(CHECKIN_TIME)],
     checkout: CHECKOUT_TIME[getRandomIndex(CHECKOUT_TIME)],
     features: creatUniqueArray(FEATURES),
