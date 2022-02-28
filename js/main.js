@@ -6,6 +6,11 @@ const MINIMUM_GUESTS_NUMBERS = 1;
 const MAXIMUM_GUESTS_NUMBERS = 50;
 const MINIMUM_PRICE = 100;
 const MAXIMUM_PRICE = 100000;
+const LATITUDE_FROM = 35.65000;
+const LATITUDE_TO = 35.70000;
+const LONGITUDE_FROM = 139.70000;
+const LONGITUDE_TO = 139.80000;
+const NUMBERS_AFTER_POINT = 5;
 
 const TYPE_OF_HOUSING = [
   'palace',
@@ -82,7 +87,7 @@ const createSimilarAd = () => ({
   },
   offer: {
     title: 'title',
-    address: `${getRandomFloat(35.65000, 35.70000, 5)}, ${getRandomFloat(139.70000, 139.80000, 5)}`,
+    address: `${getRandomFloat(LATITUDE_FROM, LATITUDE_TO, NUMBERS_AFTER_POINT)}, ${getRandomFloat(LONGITUDE_FROM, LONGITUDE_TO, NUMBERS_AFTER_POINT)}`,
     price: getRandomInt(MINIMUM_PRICE, MAXIMUM_PRICE),
     type: TYPE_OF_HOUSING[getRandomIndex(TYPE_OF_HOUSING)],
     rooms: getRandomInt(MINIMUM_ROOM_NUMBERS, MAXIMUM_ROOM_NUMBERS),
@@ -94,8 +99,8 @@ const createSimilarAd = () => ({
     photos: PHOTOS[getRandomIndex(PHOTOS)],
   },
   location: {
-    lat: getRandomFloat(35.65000, 35.70000, 5),
-    lng: getRandomFloat(139.70000, 139.80000, 5),
+    lat: getRandomFloat(LATITUDE_FROM, LATITUDE_TO, NUMBERS_AFTER_POINT),
+    lng: getRandomFloat(LONGITUDE_FROM, LONGITUDE_TO, NUMBERS_AFTER_POINT),
   },
 });
 
