@@ -1,11 +1,40 @@
 const SIMILAR_AD_COUNT = 10;
-const TYPE_OF_HOUSING = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
-const CHECKIN_TIME = ['12:00', '13:00', '14:00'];
-const CHECKOUT_TIME = ['12:00', '13:00', '14:00'];
-const FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-const PHOTOS = ['https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg', 'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg', 'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'];
+const MINIMUM_TWO_DIGIT_NUMBER = 10;
 
-//---------------------------------------------------------------------------------------------
+const TYPE_OF_HOUSING = [
+  'palace',
+  'flat',
+  'house',
+  'bungalow',
+  'hotel'
+];
+
+const CHECKIN_TIME = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
+
+const CHECKOUT_TIME = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
+
+const FEATURES = [
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner'
+];
+
+const PHOTOS = [
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'
+];
 
 const getRandomInt = (firstNumber, secondNumber) => {
   const max = Math.floor(Math.max(Math.abs(firstNumber), Math.abs(secondNumber)));
@@ -25,25 +54,19 @@ const getRandomFloat = (firstNumber, secondNumber, decimals) => {
   return Number(Math.min(result, max).toFixed(decimals));
 };
 
-//---------------------------------------------------------------------------------------------
+const getRandomIndex = (array) => getRandomInt(0, array.length - 1);
 
-const getRandomIndex = (array) => getRandomInt(0, array.length-1);
-const getRandomLength = (array) => getRandomInt(1, array.length);
+let imgNumber = 0;
 
-const usersId = Array.from({length: SIMILAR_AD_COUNT}, (v, i) => ++i);
 const getUniqueImgNumber = () => {
-  const imgNumber = usersId.splice(getRandomIndex(usersId), 1);
-  return imgNumber < 10 ? `0${imgNumber}` : imgNumber;
+  imgNumber++;
+
+  return imgNumber < MINIMUM_TWO_DIGIT_NUMBER ? `0${imgNumber}` : imgNumber;
 };
 
 const creatUniqueArray = (array) => {
-  const arrayIndexes = Array.from({length: array.length}, (v, i) => i);
-  const getUniqueElement = () => {
-    const uniqueIndex = arrayIndexes.splice(getRandomIndex(arrayIndexes), 1);
-    return array[uniqueIndex];
-  };
-
-  return Array.from({length: getRandomLength(array)}, getUniqueElement);
+  const features = array.slice();
+  return features.slice(0, getRandomInt(1, features.length - 1));
 };
 
 const createSimilarAd = () => ({
@@ -72,4 +95,4 @@ const createSimilarAd = () => ({
 const similarAds = Array.from({length: SIMILAR_AD_COUNT}, createSimilarAd);
 
 const someFunc = () => similarAds ;
-someFunc(); // Временное решение, для того чтобы задействовать переменную similarAds и угомонить ESlint.
+someFunc();
