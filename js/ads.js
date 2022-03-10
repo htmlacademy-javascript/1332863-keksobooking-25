@@ -47,7 +47,7 @@ similarAds.forEach((similarAd) => {
     ad.querySelector('.popup__type').remove();
   }
 
-  const guests = (similarAd.offer.guests % 10 !== 1 || similarAd.offer.guests === 11) ? 'гостей' : 'гостя';
+  const guestsRus = (similarAd.offer.guests % 10 !== 1 || similarAd.offer.guests === 11) ? 'гостей' : 'гостя';
 
   const pluralizeRus = (n, forms) => {
     if (n % 10 === 1 && n % 100 !== 11) {
@@ -62,34 +62,36 @@ similarAds.forEach((similarAd) => {
   };
 
   const capacity = ad.querySelector('.popup__text--capacity');
+  const {rooms, guests} = similarAd.offer;
 
-  if (similarAd.offer.rooms && similarAd.offer.guests) {
-    capacity.textContent = `${similarAd.offer.rooms} комнат${pluralizeRus(similarAd.offer.rooms, ['а', 'ы', ''])} для ${similarAd.offer.guests} ${guests}`;
-  } else if (similarAd.offer.rooms && !similarAd.offer.guests) {
-    capacity.textContent = `${similarAd.offer.rooms} комнат${pluralizeRus(similarAd.offer.rooms, ['а', 'ы', ''])}`;
-  } else if (!similarAd.offer.guests && similarAd.offer.guests) {
-    capacity.textContent = `Для ${similarAd.offer.guests} ${guests}`;
+  if (rooms && guests) {
+    capacity.textContent = `${rooms} комнат${pluralizeRus(rooms, ['а', 'ы', ''])} для ${guests} ${guestsRus}`;
+  } else if (rooms && !guests) {
+    capacity.textContent = `${rooms} комнат${pluralizeRus(rooms, ['а', 'ы', ''])}`;
+  } else if (!rooms && guests) {
+    capacity.textContent = `Для ${guests} ${guestsRus}`;
   } else {
     capacity.remove();
   }
 
   const time = ad.querySelector('.popup__text--time');
+  const {checkin, checkout} = similarAd.offer;
 
-  if (similarAd.offer.checkin && similarAd.offer.checkout) {
-    time.textContent = `Заезд после ${similarAd.offer.checkin}, выезд до ${similarAd.offer.checkout}`;
-  } else if (similarAd.offer.checkin && !similarAd.offer.checkout) {
-    time.textContent = `Заезд после ${similarAd.offer.checkin}`;
-  } else if (!similarAd.offer.checkin && similarAd.offer.checkout) {
-    time.textContent = `Выезд до ${similarAd.offer.checkout}`;
+  if (checkin && checkout) {
+    time.textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
+  } else if (checkin && !checkout) {
+    time.textContent = `Заезд после ${checkin}`;
+  } else if (!checkin && checkout) {
+    time.textContent = `Выезд до ${checkout}`;
   } else {
     time.remove();
   }
 
-  const featuresData = similarAd.offer.features;
   const featuresList = ad.querySelectorAll('.popup__feature');
+  const {features} = similarAd.offer;
 
   featuresList.forEach((featuresListItem) => {
-    const hasData = featuresData.some(
+    const hasData = features.some(
       (feature) => featuresListItem.classList.contains(`popup__feature--${feature}`),
     );
 
