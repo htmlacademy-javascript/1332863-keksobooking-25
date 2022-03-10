@@ -48,24 +48,25 @@ similarAds.forEach((similarAd) => {
   }
 
   const guests = (similarAd.offer.guests % 10 !== 1 || similarAd.offer.guests === 11) ? 'гостей' : 'гостя';
-  let rooms;
 
-  if (similarAd.offer.rooms % 10 === 1 && similarAd.offer.rooms !== 11) {
-    rooms = 'комната';
-  } else if (similarAd.offer.rooms % 10 === 2 && similarAd.offer.rooms !== 12 ||
-             similarAd.offer.rooms % 10 === 3 && similarAd.offer.rooms !== 13 ||
-             similarAd.offer.rooms % 10 === 4 && similarAd.offer.rooms !== 14 ) {
-    rooms = 'комнаты';
-  } else {
-    rooms = 'комнат';
-  }
+  const pluralizeRus = (n, forms) => {
+    if (n % 10 === 1 && n % 100 !== 11) {
+      return forms[0];
+    }
+
+    if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) {
+      return forms[1];
+    }
+
+    return forms[2];
+  };
 
   const capacity = ad.querySelector('.popup__text--capacity');
 
   if (similarAd.offer.rooms && similarAd.offer.guests) {
-    capacity.textContent = `${similarAd.offer.rooms} ${rooms} для ${similarAd.offer.guests} ${guests}`;
+    capacity.textContent = `${similarAd.offer.rooms} комнат${pluralizeRus(similarAd.offer.rooms, ['а', 'ы', ''])} для ${similarAd.offer.guests} ${guests}`;
   } else if (similarAd.offer.rooms && !similarAd.offer.guests) {
-    capacity.textContent = `${similarAd.offer.rooms} ${rooms}`;
+    capacity.textContent = `${similarAd.offer.rooms} комнат${pluralizeRus(similarAd.offer.rooms, ['а', 'ы', ''])}`;
   } else if (!similarAd.offer.guests && similarAd.offer.guests) {
     capacity.textContent = `Для ${similarAd.offer.guests} ${guests}`;
   } else {
@@ -106,7 +107,10 @@ similarAds.forEach((similarAd) => {
   const photos = similarAd.offer.photos.map((photo) => `<img src="${photo}"class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
 
   if (photos.join()) {
-    ad.querySelector('.popup__photos').innerHTML = photos;
+    const container = ad.querySelector('.popup__photos');
+    const templateImg = container.querySelector('img');
+    templateImg.remove();
+    container.insertAdjacentHTML('afterbegin', photos.join(''));
   } else {
     ad.querySelector('.popup__photos').remove();
   }
