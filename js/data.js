@@ -1,13 +1,12 @@
 import {getRandomInt, getRandomFloat, getRandomIndex} from './util.js';
 
-const SIMILAR_AD_COUNT = 10;
 const MINIMUM_TWO_DIGIT_NUMBER = 10;
 const MINIMUM_ROOM_NUMBERS = 1;
 const MAXIMUM_ROOM_NUMBERS = 50;
 const MINIMUM_GUESTS_NUMBERS = 1;
 const MAXIMUM_GUESTS_NUMBERS = 50;
 const MINIMUM_PRICE = 100;
-const MAXIMUM_PRICE = 100000;
+const MAXIMUM_PRICE = 50000;
 const LATITUDE_FROM = 35.65000;
 const LATITUDE_TO = 35.70000;
 const LONGITUDE_FROM = 139.70000;
@@ -65,10 +64,10 @@ const creatUniqueArray = (array) => {
 
 const createSimilarAd = () => ({
   author: {
-    avatar: `img/avaters/user${getUniqueImgNumber()}.png`,
+    avatar: `img/avatars/user${getUniqueImgNumber()}.png`,
   },
   offer: {
-    title: 'title',
+    title: 'Сдаётся хата с краю',
     address: `${getRandomFloat(LATITUDE_FROM, LATITUDE_TO, NUMBERS_AFTER_POINT)}, ${getRandomFloat(LONGITUDE_FROM, LONGITUDE_TO, NUMBERS_AFTER_POINT)}`,
     price: getRandomInt(MINIMUM_PRICE, MAXIMUM_PRICE),
     type: TYPE_OF_HOUSING[getRandomIndex(TYPE_OF_HOUSING)],
@@ -77,8 +76,8 @@ const createSimilarAd = () => ({
     checkin: CHECKIN_TIME[getRandomIndex(CHECKIN_TIME)],
     checkout: CHECKOUT_TIME[getRandomIndex(CHECKOUT_TIME)],
     features: creatUniqueArray(FEATURES),
-    description: 'description',
-    photos: PHOTOS[getRandomIndex(PHOTOS)],
+    description: 'Сдам хату с клопами и алкашами. Клопы сильно кусаются (и алкаши тоже), если съезжаете деньги не возвращаю!',
+    photos: PHOTOS,
   },
   location: {
     lat: getRandomFloat(LATITUDE_FROM, LATITUDE_TO, NUMBERS_AFTER_POINT),
@@ -86,6 +85,6 @@ const createSimilarAd = () => ({
   },
 });
 
-const createSimilarAds = () => Array.from({length: SIMILAR_AD_COUNT}, createSimilarAd);
+const createSimilarAds = (similarAdCount) => Array.from({length: similarAdCount}, createSimilarAd);
 
 export {createSimilarAds};

@@ -1,3 +1,1 @@
-import {createSimilarAds} from './data.js';
-
-createSimilarAds();
+import './ads.js';
