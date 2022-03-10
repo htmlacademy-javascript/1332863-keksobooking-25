@@ -1,6 +1,7 @@
 import {createSimilarAds} from './data.js';
+import { pluralizeRus } from './pluralize-rus.js';
 
-const similarAds = createSimilarAds(1);
+const similarAds = createSimilarAds(4);
 const mapCanvas = document.querySelector('#map-canvas');
 const templateFragment = document.querySelector('#card').content;
 const template = templateFragment.querySelector('.popup');
@@ -11,27 +12,6 @@ const offerType = {
   house: 'Дом',
   bungalow: 'Бунгало',
   hotel: 'Отель'
-};
-
-const ONE_ITEM = 1;
-const TWO_ITEMS = 2;
-const FOUR_ITEMS = 4;
-const TEN_ITEMS = 10;
-const ELEVEN_ITEMS = 11;
-const TWENTY_ITEMS = 20;
-const DIVIDER_TEN = 10;
-const DIVIDER_ONE_HUNDRED = 100;
-
-const pluralizeRus = (number, wordEndForms) => {
-  if (number % DIVIDER_TEN === ONE_ITEM && number % DIVIDER_ONE_HUNDRED !== ELEVEN_ITEMS) {
-    return wordEndForms[0];
-  }
-
-  if (number % DIVIDER_TEN >= TWO_ITEMS && number % DIVIDER_TEN <= FOUR_ITEMS && (number % DIVIDER_ONE_HUNDRED < TEN_ITEMS || number % DIVIDER_ONE_HUNDRED >= TWENTY_ITEMS)) {
-    return wordEndForms[1];
-  }
-
-  return wordEndForms[2];
 };
 
 const insertData = (node, data, prop='textContent') => {
@@ -110,8 +90,10 @@ similarAds.forEach((similarAd) => {
     checkin,
     checkout,
     features,
-    description } = similarAd.offer;
-  const photoList = similarAd.offer.photos.map((photo) => `<img src="${photo}"class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
+    description,
+    photos } = similarAd.offer;
+
+  const photoList = photos.map((photo) => `<img src="${photo}"class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
 
   insertData(avatar, similarAd.author.avatar, 'src');
   insertData(titleNode, title);
