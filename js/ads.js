@@ -91,26 +91,34 @@ const makeGallery = (node, photoListData) => {
 similarAds.forEach((similarAd) => {
   const ad = template.cloneNode(true);
   const avatar = ad.querySelector('.popup__avatar');
-  const title = ad.querySelector('.popup__title');
-  const address = ad.querySelector('.popup__text--address');
-  const price = ad.querySelector('.popup__text--price');
-  const type = ad.querySelector('.popup__type');
-  const description = ad.querySelector('.popup__description');
+  const titleNode = ad.querySelector('.popup__title');
+  const addressNode = ad.querySelector('.popup__text--address');
+  const priceNode = ad.querySelector('.popup__text--price');
+  const typeNode = ad.querySelector('.popup__type');
+  const descriptionNode = ad.querySelector('.popup__description');
   const capacity = ad.querySelector('.popup__text--capacity');
-  const {rooms, guests} = similarAd.offer;
   const time = ad.querySelector('.popup__text--time');
-  const {checkin, checkout} = similarAd.offer;
   const featuresList = ad.querySelectorAll('.popup__feature');
-  const {features} = similarAd.offer;
   const galleryContainer = ad.querySelector('.popup__photos');
+  const {
+    title,
+    address,
+    price,
+    type,
+    rooms,
+    guests,
+    checkin,
+    checkout,
+    features,
+    description } = similarAd.offer;
   const photoList = similarAd.offer.photos.map((photo) => `<img src="${photo}"class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
 
   insertData(avatar, similarAd.author.avatar, 'src');
-  insertData(title, similarAd.offer.title);
-  insertData(address, similarAd.offer.address);
-  insertData(price, `${similarAd.offer.price} ₽/ночь`);
-  insertData(type, offerType[similarAd.offer.type]);
-  insertData(description, similarAd.offer.description);
+  insertData(titleNode, title);
+  insertData(addressNode, address);
+  insertData(priceNode, `${price} ₽/ночь`);
+  insertData(typeNode, offerType[type]);
+  insertData(descriptionNode, description);
   insertCapacityData(capacity, rooms, guests);
   insertTimeData(time, checkin, checkout);
   makeFeatureList(featuresList, features);
