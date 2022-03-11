@@ -1,5 +1,5 @@
 import {createSimilarAds} from './data.js';
-import { pluralizeRus } from './pluralize-rus.js';
+import {pluralizeRus} from './pluralize-rus.js';
 
 const similarAds = createSimilarAds(4);
 const mapCanvas = document.querySelector('#map-canvas');
