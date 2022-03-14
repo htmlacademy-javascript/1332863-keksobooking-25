@@ -1,6 +1,6 @@
 const form = document.querySelector('.ad-form');
 const rooms = form.querySelector('#room_number');
-const capacity = document.querySelector('#capacity');
+const capacity = form.querySelector('#capacity');
 
 const pristine = new Pristine(form, {
   classTo: 'ad-form__element',
