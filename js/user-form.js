@@ -18,7 +18,11 @@ const validateCapacity = () => {
     return false;
   }
 
-  if (guestsCount.value !== '0') {
+  if (roomsCount.value === '100' && guestsCount.value === '0') {
+    return true;
+  }
+
+  if (roomsCount.value !== '100' && guestsCount.value !== '0') {
     return +roomsCount.value >= +guestsCount.value;
   }
 };
