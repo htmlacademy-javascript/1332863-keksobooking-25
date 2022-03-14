@@ -8,14 +8,6 @@ const pristine = new Pristine(form, {
 
 pristine.addValidator(form.querySelector('#price'), (value) => value <= 100000, 'Не больше 100 000 руб.');
 
-
-/*
-1 комната <= 1 гость;
-2 комнаты <= 2 гостя
-3 комнаты <= 3 гостя;
-100 комнат — <= 0.
-*/
-
 const capacity = document.querySelector('#capacity');
 const rooms = form.querySelector('#room_number');
 
