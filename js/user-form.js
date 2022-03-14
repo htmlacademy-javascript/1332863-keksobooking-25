@@ -1,4 +1,6 @@
 const form = document.querySelector('.ad-form');
+const rooms = form.querySelector('#room_number');
+const capacity = document.querySelector('#capacity');
 
 const pristine = new Pristine(form, {
   classTo: 'ad-form__element',
@@ -8,31 +10,28 @@ const pristine = new Pristine(form, {
 
 pristine.addValidator(form.querySelector('#price'), (value) => value <= 100000, 'Не больше 100 000 руб.');
 
-const capacity = document.querySelector('#capacity');
-const rooms = form.querySelector('#room_number');
-
 const validateCapacity = () => {
-  const roomsValue = rooms.querySelector('option:checked');
-  const guestsValue = capacity.querySelector('option:checked');
+  const roomsCount = rooms.querySelector('option:checked');
+  const guestsCount = capacity.querySelector('option:checked');
 
-  if (roomsValue.value === '100' && guestsValue.value !== '0') {
+  if (roomsCount.value === '100' && guestsCount.value !== '0') {
     return false;
   }
 
-  if (guestsValue.value !== '0') {
-    return +roomsValue.value >= +guestsValue.value;
+  if (guestsCount.value !== '0') {
+    return +roomsCount.value >= +guestsCount.value;
   }
 };
 
 const capacityErrorMessage = () => {
-  const roomsValue = rooms.querySelector('option:checked');
-  const guestsValue = capacity.querySelector('option:checked');
+  const roomsCount = rooms.querySelector('option:checked');
+  const guestsCount = capacity.querySelector('option:checked');
 
-  if (roomsValue.value === '100') {
+  if (roomsCount.value === '100') {
     return 'Не для гостей';
   }
 
-  if (guestsValue.value === '0') {
+  if (guestsCount.value === '0') {
     return 'Укажите количество гостей';
   }
 
