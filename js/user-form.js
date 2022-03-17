@@ -32,6 +32,13 @@ const HOUSING_TYPE = {
   palace: 10000
 };
 
+types.addEventListener('change', () => {
+  const chosenType = types.querySelector('option:checked');
+
+  price.placeholder = HOUSING_TYPE[chosenType.value];
+  price.min = HOUSING_TYPE[chosenType.value];
+});
+
 const validatePrice = (value) => {
   const chosenType = types.querySelector('option:checked');
 
@@ -40,20 +47,13 @@ const validatePrice = (value) => {
 
 const priceErrorMessage = (value) => {
   const chosenType = types.querySelector('option:checked');
-  if (value >= MAXIMUM_PRICE) {
-    return 'Не больше 100 000 руб.';
-  }
 
-  return `Минимальная цена для данного типа жилья - ${HOUSING_TYPE[chosenType.value]} руб.`;
+  if (value <= MAXIMUM_PRICE) {
+    return `Минимальная цена для данного жилья - ${HOUSING_TYPE[chosenType.value]} руб.`;
+  }
 };
 
 pristine.addValidator(price, validatePrice, priceErrorMessage);
-
-types.addEventListener('change', () => {
-  const chosenType = types.querySelector('option:checked');
-
-  price.placeholder = HOUSING_TYPE[chosenType.value];
-});
 
 const validateCapacity = () => {
   const roomsCount = rooms.querySelector('option:checked');
@@ -90,7 +90,7 @@ const capacityErrorMessage = () => {
 pristine.addValidator(capacity, validateCapacity, capacityErrorMessage);
 
 form.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-
-  pristine.validate();
+  if (!pristine.validate()) {
+    evt.preventDefault();
+  }
 });
