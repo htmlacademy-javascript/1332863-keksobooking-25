@@ -1,4 +1,7 @@
 /* required styles */
+#map-canvas {
+	height: 500px;
+}
 
 .leaflet-pane,
 .leaflet-tile,
