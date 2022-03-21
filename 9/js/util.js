@@ -7,14 +7,14 @@ const getRandomInt = (firstNumber, secondNumber) => {
   return Math.floor(result);
 };
 
-const getRandomFloat = (firstNumber, secondNumber, decimals) => {
-  const max = Math.max(Math.abs(firstNumber), Math.abs(secondNumber));
+function getRandomFloat (firstNumber, secondNumber, digits) {
   const min = Math.min(Math.abs(firstNumber), Math.abs(secondNumber));
+  const max = Math.max(Math.abs(firstNumber), Math.abs(secondNumber));
 
-  const result = Math.random() * (max - min + 1) + min;
+  const result = Math.random() * (max - min) + max;
 
-  return Number(Math.min(result, max).toFixed(decimals));
-};
+  return +result.toFixed(digits);
+}
 
 const getRandomIndex = (array) => getRandomInt(0, array.length - 1);
 

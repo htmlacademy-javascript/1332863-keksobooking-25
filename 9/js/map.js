@@ -1,6 +1,6 @@
 import {enableForms, disableForms} from './forms-state.js';
-import {generateAdData} from './ad-data.js';
-import {createSimilarAd} from './ad-template.js';
+import {generateAdData} from './ads-data.js';
+import {createSimilarAd} from './ads-template.js';
 
 disableForms();
 
@@ -15,7 +15,7 @@ const map = L.map('map-canvas')
   .setView({
     lat: 35.6895,
     lng: 139.69171,
-  }, 14);
+  }, 12);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -25,7 +25,7 @@ L.tileLayer(
 ).addTo(map);
 
 const mainPinIcon = L.icon({
-  iconUrl: '../img/main-pin.svg',
+  iconUrl: './img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
@@ -62,7 +62,7 @@ resetButton.addEventListener('click', () => {
   map.setView({
     lat: 35.6895,
     lng: 139.69171,
-  }, 14);
+  }, 12);
 });
 
 similarAds.forEach((ad) => {
@@ -74,7 +74,6 @@ similarAds.forEach((ad) => {
     {
       icon,
     });
-
   marker
     .addTo(map)
     .bindPopup(createSimilarAd(ad));
