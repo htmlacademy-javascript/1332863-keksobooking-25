@@ -3,50 +3,47 @@ import {generateAdData} from './ads-data.js';
 import {createSimilarAd} from './ads-template.js';
 
 disableForms();
+const similarAds = generateAdData(10);
+
+const mapScale = 12;
+const cityCenterLatitude = 35.6895;
+const cityCenterLongitude = 139.69171;
+const mapURL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const mapAttributes = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 const resetButton = document.querySelector('.ad-form__reset');
 const addressField = document.querySelector('#address');
-const similarAds = generateAdData(10);
+const filterParking = document.querySelector('#filter-parking');
 
 const map = L.map('map-canvas')
   .on('load', () => {
     enableForms();
   })
   .setView({
-    lat: 35.6895,
-    lng: 139.69171,
-  }, 12);
+    lat: cityCenterLatitude,
+    lng: cityCenterLongitude,
+  }, mapScale);
 
-L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
-).addTo(map);
+L.tileLayer(mapURL, {attribution: mapAttributes,}).addTo(map);
+const markerGroup = L.layerGroup().addTo(map);
 
-const mainPinIcon = L.icon({
-  iconUrl: './img/main-pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
+const createPinIcon = (url, size, anchor) => ({
+  iconUrl: url,
+  iconSize: size,
+  iconAnchor: anchor,
 });
 
-const icon = L.icon({
-  iconUrl: './img/pin.svg',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-});
+const createMarker = (lat, lng, icon, isDraggable = false) => {
+  const marker = L.marker(
+    {lat, lng},
+    {icon, draggable: isDraggable}
+  );
 
-const mainMarker = L.marker(
-  {
-    lat: 35.6895,
-    lng: 139.69171,
-  },
-  {
-    draggable: true,
-    icon: mainPinIcon,
-  }
-);
+  return marker;
+};
 
+const mainPinIcon = L.icon(createPinIcon('img/main-pin.svg', [52, 52], [26, 52]));
+const mainMarker = createMarker(cityCenterLatitude, cityCenterLongitude, mainPinIcon, true);
 mainMarker.addTo(map);
 
 mainMarker.on('moveend', (evt) => {
@@ -55,26 +52,38 @@ mainMarker.on('moveend', (evt) => {
 
 resetButton.addEventListener('click', () => {
   mainMarker.setLatLng({
-    lat: 35.6895,
-    lng: 139.69171,
+    lat: cityCenterLatitude,
+    lng: cityCenterLongitude,
   });
 
   map.setView({
-    lat: 35.6895,
-    lng: 139.69171,
-  }, 12);
+    lat: cityCenterLatitude,
+    lng: cityCenterLongitude,
+  }, mapScale);
 });
 
+const commonIcon = L.icon(createPinIcon('img/pin.svg', [40, 40], [20, 40]));
+
 similarAds.forEach((ad) => {
-  const marker = L.marker(
-    {
-      lat: ad.location.lat,
-      lng: ad.location.lng,
-    },
-    {
-      icon,
-    });
-  marker
-    .addTo(map)
+  const commonMarker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
+
+  commonMarker
+    .addTo(markerGroup)
     .bindPopup(createSimilarAd(ad));
+});
+
+const hasFeature = (features, value) => features.some((feature) => feature === value);
+
+filterParking.addEventListener('change', () => {
+  markerGroup.clearLayers();
+
+  similarAds.forEach((ad) => {
+    if (hasFeature(ad.offer.features, 'parking')) {
+      const marker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
+
+      marker
+        .addTo(markerGroup)
+        .bindPopup(createSimilarAd(ad));
+    }
+  });
 });
