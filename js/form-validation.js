@@ -38,7 +38,7 @@ noUiSlider.create(sliderElement, {
     min: 0,
     max: 100000,
   },
-  start: 1000,
+  start: 0,
   step: 1,
   connect: 'lower',
   format: {
@@ -52,11 +52,11 @@ types.addEventListener('change', () => {
   const minPrice = HOUSING_TYPE[chosenType.value];
 
   price.min = minPrice;
-  sliderElement.noUiSlider.updateOptions({start: minPrice,});
+  price.placeholder = minPrice;
 });
 
 
-sliderElement.noUiSlider.on('update', () => {
+sliderElement.noUiSlider.on('slide', () => {
   price.value = sliderElement.noUiSlider.get();
 });
 
