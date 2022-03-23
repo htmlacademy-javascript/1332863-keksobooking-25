@@ -87,8 +87,7 @@ const createSimilarAd = (adData) => {
   insertTimeData(time, checkin, checkout);
   makeFeatureList(featuresList, features);
   makeGallery(galleryContainer, photoList);
-  // eslint-disable-next-line no-console
-  console.log(ad);
+
   return ad;
 };
 

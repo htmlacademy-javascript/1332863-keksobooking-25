@@ -9,6 +9,7 @@ const rooms = form.querySelector('#room_number');
 const capacity = form.querySelector('#capacity');
 const timein = form.querySelector('#timein');
 const timeout = form.querySelector('#timeout');
+const sliderElement = document.querySelector('.ad-form__slider');
 
 const pristine = new Pristine(form, {
   classTo: 'ad-form__element',
@@ -32,11 +33,35 @@ const HOUSING_TYPE = {
   palace: 10000
 };
 
+noUiSlider.create(sliderElement, {
+  range: {
+    min: 0,
+    max: 100000,
+  },
+  start: 1000,
+  step: 1,
+  connect: 'lower',
+  format: {
+    to: (value) => value.toFixed(0),
+    from: (value) => Number(value),
+  },
+});
+
 types.addEventListener('change', () => {
   const chosenType = types.querySelector('option:checked');
+  const minPrice = HOUSING_TYPE[chosenType.value];
 
-  price.placeholder = HOUSING_TYPE[chosenType.value];
-  price.min = HOUSING_TYPE[chosenType.value];
+  price.min = minPrice;
+  sliderElement.noUiSlider.updateOptions({start: minPrice,});
+});
+
+
+sliderElement.noUiSlider.on('update', () => {
+  price.value = sliderElement.noUiSlider.get();
+});
+
+price.addEventListener('input', () => {
+  sliderElement.noUiSlider.set(price.value);
 });
 
 const validatePrice = (value) => {
