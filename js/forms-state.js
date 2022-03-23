@@ -11,7 +11,7 @@ const disableForms = () => {
   adFormElements.forEach((element) => element.setAttribute('disabled', ''));
   mapFilterElements.forEach((element) => element.setAttribute('disabled', ''));
   mapFilterFeatures.forEach((element) => element.setAttribute('disabled', ''));
-  slider.style.display = 'none';
+  slider.setAttribute('disabled', true);
 };
 
 const enableForms = () => {
@@ -20,7 +20,7 @@ const enableForms = () => {
   adFormElements.forEach((element) => element.removeAttribute('disabled', ''));
   mapFilterElements.forEach((element) => element.removeAttribute('disabled', ''));
   mapFilterFeatures.forEach((element) => element.removeAttribute('disabled', ''));
-  slider.style.display = 'block';
+  slider.removeAttribute('disabled');
 };
 
 export {disableForms, enableForms};
