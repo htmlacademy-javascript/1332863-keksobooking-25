@@ -46,7 +46,9 @@ const mainMarker = createMarker(CITY_CENTER_LATITUDE, CITY_CENTER_LONGITUDE, mai
 mainMarker.addTo(map);
 
 mainMarker.on('moveend', (evt) => {
-  addressField.value = evt.target.getLatLng();
+  const {lat, lng} = evt.target.getLatLng();
+
+  addressField.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 });
 
 resetButton.addEventListener('click', () => {
