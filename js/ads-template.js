@@ -1,20 +1,14 @@
-import {createSimilarAds} from './data.js';
 import {pluralizeRus} from './pluralize-rus.js';
 
-const similarAds = createSimilarAds(1);
-const mapCanvas = document.querySelector('#map-canvas');
-const templateFragment = document.querySelector('#card').content;
-const template = templateFragment.querySelector('.popup');
-const fragment = document.createDocumentFragment();
 const offerType = {
   palace: 'Дворец',
   flat: 'Квартира',
   house: 'Дом',
   bungalow: 'Бунгало',
-  hotel: 'Отель'
+  hotel: 'Отель',
 };
 
-const insertData = (node, data, prop='textContent') => {
+const insertData = (node, data, prop = 'textContent') => {
   if (data) {
     node[prop] = data;
   } else {
@@ -48,9 +42,7 @@ const insertTimeData = (node, checkInData, checkOutData) => {
 
 const makeFeatureList = (featureNodes, featureData) => {
   featureNodes.forEach((featureNodesItem) => {
-    const hasData = featureData.some(
-      (feature) => featureNodesItem.classList.contains(`popup__feature--${feature}`),
-    );
+    const hasData = featureData.some((feature) => featureNodesItem.classList.contains(`popup__feature--${feature}`));
 
     if (!hasData) {
       featureNodesItem.remove();
@@ -68,8 +60,10 @@ const makeGallery = (node, photoListData) => {
   }
 };
 
-similarAds.forEach((similarAd) => {
+const createSimilarAd = (adData) => {
+  const template = document.querySelector('#card').content.querySelector('.popup');
   const ad = template.cloneNode(true);
+
   const avatar = ad.querySelector('.popup__avatar');
   const titleNode = ad.querySelector('.popup__title');
   const addressNode = ad.querySelector('.popup__text--address');
@@ -80,22 +74,10 @@ similarAds.forEach((similarAd) => {
   const time = ad.querySelector('.popup__text--time');
   const featuresList = ad.querySelectorAll('.popup__feature');
   const galleryContainer = ad.querySelector('.popup__photos');
-  const {
-    title,
-    address,
-    price,
-    type,
-    rooms,
-    guests,
-    checkin,
-    checkout,
-    features,
-    description,
-    photos } = similarAd.offer;
-
+  const { title, address, price, type, rooms, guests, checkin, checkout, features, description, photos } = adData.offer;
   const photoList = photos.map((photo) => `<img src="${photo}"class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
 
-  insertData(avatar, similarAd.author.avatar, 'src');
+  insertData(avatar, adData.author.avatar, 'src');
   insertData(titleNode, title);
   insertData(addressNode, address);
   insertData(priceNode, `${price} ₽/ночь`);
@@ -106,7 +88,7 @@ similarAds.forEach((similarAd) => {
   makeFeatureList(featuresList, features);
   makeGallery(galleryContainer, photoList);
 
-  fragment.appendChild(ad);
-});
+  return ad;
+};
 
-mapCanvas.appendChild(fragment);
+export {createSimilarAd};

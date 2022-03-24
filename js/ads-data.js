@@ -7,10 +7,10 @@ const MINIMUM_GUESTS_NUMBERS = 1;
 const MAXIMUM_GUESTS_NUMBERS = 50;
 const MINIMUM_PRICE = 100;
 const MAXIMUM_PRICE = 50000;
-const LATITUDE_FROM = 35.65000;
-const LATITUDE_TO = 35.70000;
-const LONGITUDE_FROM = 139.70000;
-const LONGITUDE_TO = 139.80000;
+const LATITUDE_FROM = 35.50000;
+const LATITUDE_TO = 35.62000;
+const LONGITUDE_FROM = 139.15000;
+const LONGITUDE_TO = 139.50000;
 const NUMBERS_AFTER_POINT = 5;
 
 const TYPE_OF_HOUSING = [
@@ -85,6 +85,6 @@ const createSimilarAd = () => ({
   },
 });
 
-const createSimilarAds = (similarAdCount) => Array.from({length: similarAdCount}, createSimilarAd);
+const generateAdData = (adCount) => Array.from({length: adCount}, createSimilarAd);
 
-export {createSimilarAds};
+export {generateAdData};
