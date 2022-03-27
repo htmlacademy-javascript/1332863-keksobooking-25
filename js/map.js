@@ -1,6 +1,6 @@
-import { enableForms, disableForms } from './forms-state.js';
-import { generateAdData } from './ads-data.js';
-import { createSimilarAd } from './ads-template.js';
+import {enableForms, disableForms} from './forms-state.js';
+import {createSimilarAd} from './ads-template.js';
+import {getData} from './load.js';
 
 const MAP_SCALE = 12;
 const CITY_CENTER_LATITUDE = 35.6895;
@@ -68,24 +68,22 @@ resetButton.addEventListener('click', () => {
 
 const commonIcon = L.icon(createPinIcon('img/pin.svg', [40, 40], [20, 40]));
 
-const similarAds = generateAdData(10);
-
-similarAds.forEach((ad) => {
+getData().then((ads) => ads.forEach((ad) => {
   const commonMarker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
 
   commonMarker.addTo(markerGroup).bindPopup(createSimilarAd(ad));
-});
+}));
 
-const hasFeature = (features, value) => features.some((feature) => feature === value);
+const hasFeature = (features, value) => features ? features.some((feature) => feature === value): false;
 
 filterParking.addEventListener('change', () => {
   markerGroup.clearLayers();
 
-  similarAds.forEach((ad) => {
+  getData().then((ads) => ads.forEach((ad) => {
     if (hasFeature(ad.offer.features, 'parking')) {
       const marker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
 
       marker.addTo(markerGroup).bindPopup(createSimilarAd(ad));
     }
-  });
+  }));
 });
