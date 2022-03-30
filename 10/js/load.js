@@ -1,6 +1,9 @@
+import {disableForms} from './forms-state.js';
+
 const URL_FOR_GET = 'https://25.javascript.pages.academy/keksobooking/data';
 const URL_FOR_SEND = 'https://25.javascript.pages.academy/keksobooking';
-const ALERT_SHOW_TIME = 3000;
+const ALERT_SHOW_TIME = 7500;
+const SUCCESS_SHOW_TIME = 2500;
 
 const successMessage = document.querySelector('#success').content.querySelector('.success');
 const errorMessage = document.querySelector('#error').content.querySelector('.error');
@@ -9,7 +12,7 @@ const mainContainer = document.querySelector('main');
 
 const onSuccess = () => {
   mainContainer.insertAdjacentElement('afterbegin', successMessage);
-  setTimeout((() => successMessage.remove()), ALERT_SHOW_TIME);
+  setTimeout((() => successMessage.remove()), SUCCESS_SHOW_TIME);
 };
 
 const onFail = () => {
@@ -19,6 +22,8 @@ const onFail = () => {
 errorButton.addEventListener('click', () => errorMessage.remove());
 
 const showErrorMessage = () => {
+  disableForms();
+
   const alertContainer = document.createElement('div');
   alertContainer.style.position = 'absolute';
   alertContainer.style.zIndex = 100;
