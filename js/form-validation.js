@@ -124,6 +124,7 @@ form.addEventListener('submit', (evt) => {
     sendData(formData);
     evt.target.reset();
     sliderElement.noUiSlider.set(0);
+    price.placeholder = '1000';
   }
 });
 
