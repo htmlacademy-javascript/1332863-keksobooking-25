@@ -20,6 +20,16 @@ const disableMapForm = () => {
   mapFilterFeatures.forEach((element) => element.setAttribute('disabled', ''));
 };
 
+const disableButton = (btn) => {
+  btn.disabled = true;
+  btn.style.opacity = 0.4;
+};
+
+const enableButton = (btn) => {
+  btn.disabled = false;
+  btn.style.opacity = 1;
+};
+
 const enableForms = () => {
   adForm.classList.remove('ad-form--disabled');
   mapFilter.classList.remove('map__filters--disabled');
@@ -29,4 +39,4 @@ const enableForms = () => {
   slider.removeAttribute('disabled');
 };
 
-export {disableForms, enableForms, disableMapForm};
+export {disableForms, enableForms, disableMapForm, disableButton, enableButton};
