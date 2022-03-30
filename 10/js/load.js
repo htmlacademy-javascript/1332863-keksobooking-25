@@ -1,4 +1,4 @@
-import {disableForms} from './forms-state.js';
+import {disableMapForm, disableButton, enableButton} from './forms-state.js';
 
 const URL_FOR_GET = 'https://25.javascript.pages.academy/keksobooking/data';
 const URL_FOR_SEND = 'https://25.javascript.pages.academy/keksobooking';
@@ -22,7 +22,7 @@ const onFail = () => {
 errorButton.addEventListener('click', () => errorMessage.remove());
 
 const showErrorMessage = () => {
-  disableForms();
+  disableMapForm();
 
   const alertContainer = document.createElement('div');
   alertContainer.style.position = 'absolute';
@@ -35,7 +35,7 @@ const showErrorMessage = () => {
   alertContainer.style.textAlign = 'center';
   alertContainer.style.backgroundColor = 'red';
 
-  alertContainer.textContent = 'Ошибка при получении данных, повторите попытку позже.';
+  alertContainer.textContent = 'Ошибка при получении данных для карты, повторите попытку позже.';
 
   document.body.append(alertContainer);
 
@@ -47,17 +47,21 @@ const showErrorMessage = () => {
 
 const getData = () => fetch(URL_FOR_GET).then((response) => response.ok ? response.json(): showErrorMessage());
 
-const sendData = (data) => {
+const sendData = (data, btn) => {
+  disableButton(btn);
   fetch(URL_FOR_SEND, {method: 'POST', body: data})
     .then((response) => {
       if (response.ok) {
         onSuccess();
+        enableButton(btn);
       } else {
         onFail();
+        enableButton(btn);
       }
     })
     .catch(() => {
       onFail();
+      enableButton(btn);
     });
 };
 

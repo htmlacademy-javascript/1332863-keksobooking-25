@@ -12,6 +12,7 @@ const capacity = form.querySelector('#capacity');
 const timein = form.querySelector('#timein');
 const timeout = form.querySelector('#timeout');
 const resetButton = form.querySelector('.ad-form__reset');
+const submitButton = form.querySelector('.ad-form__submit');
 const sliderElement = document.querySelector('.ad-form__slider');
 
 const pristine = new Pristine(form, {
@@ -121,7 +122,7 @@ form.addEventListener('submit', (evt) => {
   evt.preventDefault();
   if (pristine.validate()) {
     const formData = new FormData(evt.target);
-    sendData(formData);
+    sendData(formData, submitButton);
     evt.target.reset();
     sliderElement.noUiSlider.set(0);
     price.placeholder = '1000';
