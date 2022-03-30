@@ -1,6 +1,6 @@
-import {disableForms} from './forms-state.js';
+import {disableMapForm} from './forms-state.js';
 
-const URL_FOR_GET = 'https://25.javascript.pages.academy/keksobooking/data';
+const URL_FOR_GET = 'https://25.javascript.pages.academy/keksobooking/dat';
 const URL_FOR_SEND = 'https://25.javascript.pages.academy/keksobooking';
 const ALERT_SHOW_TIME = 7500;
 const SUCCESS_SHOW_TIME = 2500;
@@ -22,7 +22,7 @@ const onFail = () => {
 errorButton.addEventListener('click', () => errorMessage.remove());
 
 const showErrorMessage = () => {
-  disableForms();
+  disableMapForm();
 
   const alertContainer = document.createElement('div');
   alertContainer.style.position = 'absolute';
@@ -35,7 +35,7 @@ const showErrorMessage = () => {
   alertContainer.style.textAlign = 'center';
   alertContainer.style.backgroundColor = 'red';
 
-  alertContainer.textContent = 'Ошибка при получении данных, повторите попытку позже.';
+  alertContainer.textContent = 'Ошибка при получении данных для карты, повторите попытку позже.';
 
   document.body.append(alertContainer);
 
