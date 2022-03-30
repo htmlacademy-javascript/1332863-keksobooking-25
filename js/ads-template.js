@@ -42,7 +42,10 @@ const insertTimeData = (node, checkInData, checkOutData) => {
 
 const makeFeatureList = (featureNodes, featureData) => {
   featureNodes.forEach((featureNodesItem) => {
-    const hasData = featureData.some((feature) => featureNodesItem.classList.contains(`popup__feature--${feature}`));
+    let hasData;
+    if (featureData) {
+      hasData = featureData.some((feature) => featureNodesItem.classList.contains(`popup__feature--${feature}`));
+    }
 
     if (!hasData) {
       featureNodesItem.remove();
@@ -51,12 +54,14 @@ const makeFeatureList = (featureNodes, featureData) => {
 };
 
 const makeGallery = (node, photoListData) => {
-  if (photoListData.join()) {
-    const templateImg = node.querySelector('img');
-    templateImg.remove();
-    node.insertAdjacentHTML('afterbegin', photoListData.join(''));
-  } else {
-    node.remove();
+  if (photoListData) {
+    if (photoListData.join()) {
+      const templateImg = node.querySelector('img');
+      templateImg.remove();
+      node.insertAdjacentHTML('afterbegin', photoListData.join(''));
+    } else {
+      node.remove();
+    }
   }
 };
 
@@ -75,7 +80,7 @@ const createSimilarAd = (adData) => {
   const featuresList = ad.querySelectorAll('.popup__feature');
   const galleryContainer = ad.querySelector('.popup__photos');
   const { title, address, price, type, rooms, guests, checkin, checkout, features, description, photos } = adData.offer;
-  const photoList = photos.map((photo) => `<img src="${photo}"class="popup__photo" width="45" height="40" alt="Фотография жилья">`);
+  const photoList = photos ? photos.map((photo) => `<img src="${photo}"class="popup__photo" width="45" height="40" alt="Фотография жилья">`): '';
 
   insertData(avatar, adData.author.avatar, 'src');
   insertData(titleNode, title);
