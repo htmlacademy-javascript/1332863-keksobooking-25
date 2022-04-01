@@ -1,4 +1,4 @@
-import { sendData } from './load.js';
+import {sendData} from './api.js';
 
 const MAXIMUM_PRICE = 100000;
 const WHOLESALE_OFFER = '100';

@@ -1,17 +1,14 @@
 import {enableForms, disableForms} from './forms-state.js';
 import {createSimilarAd} from './ads-template.js';
-import {getData} from './load.js';
 
 const MAP_SCALE = 13;
 const CITY_CENTER_LATITUDE = 35.68225;
 const CITY_CENTER_LONGITUDE = 139.75383;
 const MAP_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const MAP_ATTRIBUTES = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-const SIMILAR_ADS_COUNT = 10;
 
 const resetButton = document.querySelector('.ad-form__reset');
 const addressField = document.querySelector('#address');
-const filterParking = document.querySelector('#filter-parking');
 
 disableForms();
 
@@ -69,24 +66,15 @@ resetButton.addEventListener('click', () => {
 
 const commonIcon = L.icon(createPinIcon('img/pin.svg', [40, 40], [20, 40]));
 
-const similarAds = () => getData().then((ads) => ads.slice(0, SIMILAR_ADS_COUNT));
+const renderSimilarAds = (adsData, amountAds) => {
 
-similarAds().then((ads) => ads.forEach((ad) => {
-  const commonMarker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
+  adsData
+    .then((ads) => ads.slice(0, amountAds))
+    .then((ads) => ads.forEach((ad) => {
+      const commonMarker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
 
-  commonMarker.addTo(markerGroup).bindPopup(createSimilarAd(ad));
-}));
+      commonMarker.addTo(markerGroup).bindPopup(createSimilarAd(ad));
+    }));
+};
 
-const hasFeature = (features, value) => features ? features.some((feature) => feature === value): false;
-
-filterParking.addEventListener('change', () => {
-  markerGroup.clearLayers();
-
-  getData().then((ads) => ads.forEach((ad) => {
-    if (hasFeature(ad.offer.features, 'parking')) {
-      const marker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
-
-      marker.addTo(markerGroup).bindPopup(createSimilarAd(ad));
-    }
-  }));
-});
+export {renderSimilarAds};
