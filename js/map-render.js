@@ -67,14 +67,14 @@ resetButton.addEventListener('click', () => {
 const commonIcon = L.icon(createPinIcon('img/pin.svg', [40, 40], [20, 40]));
 
 const renderSimilarAds = (adsData, amountAds) => {
+  markerGroup.clearLayers();
 
-  adsData
-    .then((ads) => ads.slice(0, amountAds))
-    .then((ads) => ads.forEach((ad) => {
-      const commonMarker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
+  adsData = adsData.slice(0, amountAds);
 
-      commonMarker.addTo(markerGroup).bindPopup(createSimilarAd(ad));
-    }));
+  adsData.forEach((ad) => {
+    const commonMarker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
+    commonMarker.addTo(markerGroup).bindPopup(createSimilarAd(ad));
+  });
 };
 
 export {renderSimilarAds};
