@@ -1,5 +1,5 @@
-import {enableForms, disableForms} from './forms-state.js';
-import {createSimilarAd} from './ads-template.js';
+import { enableForms, disableForms } from './forms-state.js';
+import { createSimilarAd } from './ads-template.js';
 
 const MAP_SCALE = 13;
 const CITY_CENTER_LATITUDE = 35.68225;
@@ -34,7 +34,7 @@ const createPinIcon = (url, size, anchor) => ({
 });
 
 const createMarker = (lat, lng, icon, isDraggable = false) => {
-  const marker = L.marker({lat, lng}, {icon, draggable: isDraggable});
+  const marker = L.marker({ lat, lng }, { icon, draggable: isDraggable });
 
   return marker;
 };
@@ -44,7 +44,7 @@ const mainMarker = createMarker(CITY_CENTER_LATITUDE, CITY_CENTER_LONGITUDE, mai
 mainMarker.addTo(map);
 
 mainMarker.on('moveend', (evt) => {
-  const {lat, lng} = evt.target.getLatLng();
+  const { lat, lng } = evt.target.getLatLng();
 
   addressField.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 });
@@ -66,7 +66,7 @@ resetButton.addEventListener('click', () => {
 
 const commonIcon = L.icon(createPinIcon('img/pin.svg', [40, 40], [20, 40]));
 
-const renderSimilarAds = (adsData) => {
+const renderAds = (adsData) => {
   markerGroup.clearLayers();
 
   adsData.forEach((ad) => {
@@ -75,4 +75,4 @@ const renderSimilarAds = (adsData) => {
   });
 };
 
-export {renderSimilarAds};
+export { renderAds };

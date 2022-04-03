@@ -22,4 +22,4 @@ const pluralizeRus = (number, wordEndForms) => {
   return wordEndForms[DEFAULT_END];
 };
 
-export {pluralizeRus};
+export { pluralizeRus };

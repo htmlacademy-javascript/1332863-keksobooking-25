@@ -1,8 +1,8 @@
-import {getRandomInt} from './util.js';
-import {getData} from './api.js';
-import {renderSimilarAds} from './map-render.js';
-import {showErrorMessage} from './util.js';
-import {debounce} from './util.js';
+import { getRandomInt } from './util.js';
+import { getData } from './api.js';
+import { renderAds } from './map-render.js';
+import { showErrorMessage } from './util.js';
+import { debounce } from './util.js';
 
 const SIMILAR_ADS_COUNT = 10;
 const MESSAGE_TEXT = 'Объявления под заданные фильтры отсутствуют, будут показаны 10 случайных объявлений';
@@ -17,16 +17,17 @@ const adsData = getData().then((ads) => ads.slice());
 
 const getRandomIndex = (arrLength) => {
   const randomIndex = getRandomInt(0, arrLength) - SIMILAR_ADS_COUNT;
-  return (randomIndex < 0) ? 0 : randomIndex;
+  return randomIndex < 0 ? 0 : randomIndex;
 };
 
 const renderRandomAds = () => {
-  adsData.then((data) => {
-    const randomIndex = getRandomIndex(data.length);
-    const randomAds = data.slice(randomIndex, randomIndex + SIMILAR_ADS_COUNT);
-    return randomAds;
-  })
-    .then((randomAds) => renderSimilarAds(randomAds));
+  adsData
+    .then((data) => {
+      const randomIndex = getRandomIndex(data.length);
+      const randomAds = data.slice(randomIndex, randomIndex + SIMILAR_ADS_COUNT);
+      return randomAds;
+    })
+    .then((randomAds) => renderAds(randomAds));
 };
 
 renderRandomAds();
@@ -47,7 +48,7 @@ const renderFilteredAds = () => {
 
   filters.forEach((filter) => {
     if (filter.name === 'housing-rooms' && filter.value !== 'any') {
-      activeFilters.push(`${filter.value}rooms`) ;
+      activeFilters.push(`${filter.value}rooms`);
     } else if (filter.name === 'housing-guests' && filter.value !== 'any') {
       activeFilters.push(`${filter.value}guests`);
     } else if (filter.value !== 'any') {
@@ -67,10 +68,10 @@ const renderFilteredAds = () => {
         if (activeFilters.some((value) => ad.offer.type === value)) {
           ad.rank++;
         }
-        if (activeFilters.some((value) => value.endsWith('rooms') ? ad.offer.rooms === parseInt(value, 10): false)) {
+        if (activeFilters.some((value) => value.endsWith('rooms') ? ad.offer.rooms === parseInt(value, 10) : false)) {
           ad.rank++;
         }
-        if (activeFilters.some((value) => value.endsWith('guests') ? ad.offer.guests === parseInt(value, 10): false)) {
+        if (activeFilters.some((value) => value.endsWith('guests') ? ad.offer.guests === parseInt(value, 10) : false)) {
           ad.rank++;
         }
 
@@ -91,12 +92,11 @@ const renderFilteredAds = () => {
         if (ad.rank === activeFilters.length) {
           rankedAds.push(ad);
         }
-
       }),
     )
     .then(() => rankedAds.sort((prev, next) => next.rank - prev.rank))
     .then(() => rankedAds.slice(0, SIMILAR_ADS_COUNT))
-    .then((filteredAds) => (filteredAds.length) ? renderSimilarAds(filteredAds) : alertNotSuchAds());
+    .then((filteredAds) => filteredAds.length ? renderAds(filteredAds) : alertNotSuchAds());
 };
 
 mapForm.addEventListener('change', debounce(renderFilteredAds, DEBOUNCE_TIMEOUT));
