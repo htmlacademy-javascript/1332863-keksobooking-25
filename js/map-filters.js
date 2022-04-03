@@ -2,10 +2,12 @@ import {getRandomInt} from './util.js';
 import {getData} from './api.js';
 import {renderSimilarAds} from './map-render.js';
 import {showErrorMessage} from './util.js';
+import {debounce} from './util.js';
 
 const SIMILAR_ADS_COUNT = 10;
 const MESSAGE_TEXT = 'Объявления под заданные фильтры отсутствуют, будут показаны 10 случайных объявлений';
 const ALERT_SHOW_TIME = 5000;
+const DEBOUNCE_TIMEOUT = 500;
 
 const mapForm = document.querySelector('.map__filters');
 const filters = mapForm.querySelectorAll('[name^=housing]');
@@ -40,7 +42,7 @@ const priceRange = {
   high: { min: 50001, max: Infinity },
 };
 
-mapForm.addEventListener('change', () => {
+const renderFilteredAds = () => {
   const activeFilters = [];
 
   filters.forEach((filter) => {
@@ -95,4 +97,6 @@ mapForm.addEventListener('change', () => {
     .then(() => rankedAds.sort((prev, next) => next.rank - prev.rank))
     .then(() => rankedAds.slice(0, SIMILAR_ADS_COUNT))
     .then((filteredAds) => (filteredAds.length) ? renderSimilarAds(filteredAds) : alertNotSuchAds());
-});
+};
+
+mapForm.addEventListener('change', debounce(renderFilteredAds, DEBOUNCE_TIMEOUT));

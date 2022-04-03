@@ -40,4 +40,14 @@ const showErrorMessage = (message, showTime) => {
   }, showTime);
 };
 
-export {getRandomInt, getRandomFloat, getRandomIndex, showErrorMessage};
+const debounce = (callback, timeoutDelay = 500) => {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export {getRandomInt, getRandomFloat, getRandomIndex, showErrorMessage, debounce};
