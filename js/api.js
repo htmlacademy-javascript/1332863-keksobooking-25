@@ -1,9 +1,11 @@
 import {disableMapForm, disableButton, enableButton} from './forms-state.js';
+import {showErrorMessage} from './util.js';
 
 const URL_FOR_GET = 'https://25.javascript.pages.academy/keksobooking/data';
 const URL_FOR_SEND = 'https://25.javascript.pages.academy/keksobooking';
 const ALERT_SHOW_TIME = 7500;
 const SUCCESS_SHOW_TIME = 2500;
+const MESSAGE_TEXT = 'Ошибка при получении данных для карты, повторите попытку позже.';
 
 const successMessage = document.querySelector('#success').content.querySelector('.success');
 const errorMessage = document.querySelector('#error').content.querySelector('.error');
@@ -21,31 +23,12 @@ const onFail = () => {
 
 errorButton.addEventListener('click', () => errorMessage.remove());
 
-const showErrorMessage = () => {
+const alertNotDownloadedData = () => {
   disableMapForm();
-
-  const alertContainer = document.createElement('div');
-  alertContainer.style.position = 'absolute';
-  alertContainer.style.zIndex = 100;
-  alertContainer.style.top = 0;
-  alertContainer.style.left = 0;
-  alertContainer.style.right = 0;
-  alertContainer.style.padding = '10px 3px';
-  alertContainer.style.fontSize = '30px';
-  alertContainer.style.textAlign = 'center';
-  alertContainer.style.backgroundColor = 'red';
-
-  alertContainer.textContent = 'Ошибка при получении данных для карты, повторите попытку позже.';
-
-  document.body.append(alertContainer);
-
-  setTimeout(() => {
-    alertContainer.remove();
-  }, ALERT_SHOW_TIME);
+  showErrorMessage(MESSAGE_TEXT, ALERT_SHOW_TIME);
 };
 
-
-const getData = () => fetch(URL_FOR_GET).then((response) => response.ok ? response.json(): showErrorMessage());
+const getData = () => fetch(URL_FOR_GET).then((response) => response.ok ? response.json(): alertNotDownloadedData());
 
 const sendData = (data, btn) => {
   disableButton(btn);

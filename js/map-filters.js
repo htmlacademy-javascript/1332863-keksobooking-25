@@ -1,49 +1,98 @@
+import {getRandomInt} from './util.js';
 import {getData} from './api.js';
 import {renderSimilarAds} from './map-render.js';
+import {showErrorMessage} from './util.js';
 
 const SIMILAR_ADS_COUNT = 10;
+const MESSAGE_TEXT = 'Объявления под заданные фильтры отсутствуют, будут показаны 10 случайных объявлений';
+const ALERT_SHOW_TIME = 5000;
 
-const filters = document.querySelectorAll('[name^=housing]');
-const features = document.querySelectorAll('[name=features]');
+const mapForm = document.querySelector('.map__filters');
+const filters = mapForm.querySelectorAll('[name^=housing]');
+const features = mapForm.querySelectorAll('[name=features]');
 
 const adsData = getData().then((ads) => ads.slice());
-// adsData.then((data) => console.log(data));
 
-const renderDefaultMarkers = () => {
-  adsData.then((data) => renderSimilarAds(data, SIMILAR_ADS_COUNT));
+const getRandomIndex = (arrLength) => {
+  const randomIndex = getRandomInt(0, arrLength) - SIMILAR_ADS_COUNT;
+  return (randomIndex < 0) ? 0 : randomIndex;
 };
 
-renderDefaultMarkers();
+const renderRandomAds = () => {
+  adsData.then((data) => {
+    const randomIndex = getRandomIndex(data.length);
+    const randomAds = data.slice(randomIndex, randomIndex + SIMILAR_ADS_COUNT);
+    return randomAds;
+  })
+    .then((randomAds) => renderSimilarAds(randomAds));
+};
+
+renderRandomAds();
+
+const alertNotSuchAds = () => {
+  showErrorMessage(MESSAGE_TEXT, ALERT_SHOW_TIME);
+  renderRandomAds();
+};
 
 const priceRange = {
-  low: {min: 0, max: 10000},
-  middle: {min: 10001, max: 50000},
-  high: {min: 50000, max: Infinity}
+  low: { min: 0, max: 10000 },
+  middle: { min: 10001, max: 50000 },
+  high: { min: 50001, max: Infinity },
 };
 
-const filterBy = (value, filterName) => adsData.then((ads) => ads.filter((ad) => String(ad.offer[filterName]) === value));
-const filterByPrice = (value) => adsData.then((ads) => ads.filter((ad) => ad.offer.price >= priceRange[value].min && ad.offer.price <= priceRange[value].max));
-const hasFeature = (featuresInData, value) => featuresInData ? featuresInData.some((feature) => feature === value) : false;
-const filterByFeatures = (value) => adsData.then((ads) => ads.filter((ad) => hasFeature(ad.offer.features, value)));
+mapForm.addEventListener('change', () => {
+  const activeFilters = [];
 
-filters.forEach((filter) => filter.addEventListener('change', () => {
-  if (filter.value === 'any') {
-    renderDefaultMarkers();
-    return;
-  }
-  if (filter.name === 'housing-price') {
-    filterByPrice(filter.value).then((filteredData) => renderSimilarAds(filteredData, SIMILAR_ADS_COUNT));
-  } else {
-    filterBy(filter.value, filter.name.replace('housing-', '')).then((filteredData) => renderSimilarAds(filteredData, SIMILAR_ADS_COUNT));
-  }
-}));
-
-features.forEach((feature) => {
-  feature.addEventListener('change', () => {
-    if (feature.checked) {
-      filterByFeatures(feature.value).then((filteredData) => renderSimilarAds(filteredData, SIMILAR_ADS_COUNT));
-    } else {
-      renderDefaultMarkers();
+  filters.forEach((filter) => {
+    if (filter.name === 'housing-rooms' && filter.value !== 'any') {
+      activeFilters.push(`${filter.value}rooms`) ;
+    } else if (filter.name === 'housing-guests' && filter.value !== 'any') {
+      activeFilters.push(`${filter.value}guests`);
+    } else if (filter.value !== 'any') {
+      activeFilters.push(filter.value);
     }
   });
+
+  features.forEach((feature) => feature.checked ? activeFilters.push(feature.value) : activeFilters);
+
+  const rankedAds = [];
+
+  adsData
+    .then((ads) =>
+      ads.forEach((ad) => {
+        ad.rank = 0;
+
+        if (activeFilters.some((value) => ad.offer.type === value)) {
+          ad.rank++;
+        }
+        if (activeFilters.some((value) => value.endsWith('rooms') ? ad.offer.rooms === parseInt(value, 10): false)) {
+          ad.rank++;
+        }
+        if (activeFilters.some((value) => value.endsWith('guests') ? ad.offer.guests === parseInt(value, 10): false)) {
+          ad.rank++;
+        }
+
+        activeFilters.some((value) => {
+          if (value === 'low' || value === 'middle' || value === 'high') {
+            if (ad.offer.price >= priceRange[value].min && ad.offer.price <= priceRange[value].max) {
+              ad.rank++;
+            }
+          }
+        });
+
+        activeFilters.some((value) => {
+          if (ad.offer.features) {
+            ad.offer.features.forEach((feature) => (feature === value ? ad.rank++ : ad.rank));
+          }
+        });
+
+        if (ad.rank === activeFilters.length) {
+          rankedAds.push(ad);
+        }
+
+      }),
+    )
+    .then(() => rankedAds.sort((prev, next) => next.rank - prev.rank))
+    .then(() => rankedAds.slice(0, SIMILAR_ADS_COUNT))
+    .then((filteredAds) => (filteredAds.length) ? renderSimilarAds(filteredAds) : alertNotSuchAds());
 });

@@ -66,10 +66,8 @@ resetButton.addEventListener('click', () => {
 
 const commonIcon = L.icon(createPinIcon('img/pin.svg', [40, 40], [20, 40]));
 
-const renderSimilarAds = (adsData, amountAds) => {
+const renderSimilarAds = (adsData) => {
   markerGroup.clearLayers();
-
-  adsData = adsData.slice(0, amountAds);
 
   adsData.forEach((ad) => {
     const commonMarker = createMarker(ad.location.lat, ad.location.lng, commonIcon);
