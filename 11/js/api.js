@@ -1,5 +1,5 @@
-import {disableMapForm, disableButton, enableButton} from './forms-state.js';
-import {showErrorMessage} from './util.js';
+import { disableMapForm, disableButton, enableButton } from './forms-state.js';
+import { showErrorMessage } from './util.js';
 
 const URL_FOR_GET = 'https://25.javascript.pages.academy/keksobooking/data';
 const URL_FOR_SEND = 'https://25.javascript.pages.academy/keksobooking';
@@ -48,4 +48,4 @@ const sendData = (data, btn) => {
     });
 };
 
-export {getData, sendData};
+export { getData, sendData };

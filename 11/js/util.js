@@ -50,4 +50,4 @@ const debounce = (callback, timeoutDelay = 500) => {
   };
 };
 
-export {getRandomInt, getRandomFloat, getRandomIndex, showErrorMessage, debounce};
+export { getRandomInt, getRandomFloat, getRandomIndex, showErrorMessage, debounce };

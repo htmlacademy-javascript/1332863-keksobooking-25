@@ -1,4 +1,4 @@
-import {pluralizeRus} from './pluralize-rus.js';
+import { pluralizeRus } from './pluralize-rus.js';
 
 const offerType = {
   palace: 'Дворец',
@@ -96,4 +96,4 @@ const createSimilarAd = (adData) => {
   return ad;
 };
 
-export {createSimilarAd};
+export { createSimilarAd };
