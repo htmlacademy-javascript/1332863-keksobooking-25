@@ -100,3 +100,5 @@ const renderFilteredAds = () => {
 };
 
 mapForm.addEventListener('change', debounce(renderFilteredAds, DEBOUNCE_TIMEOUT));
+
+export { renderRandomAds };
