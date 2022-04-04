@@ -1,8 +1,7 @@
 import { getRandomInt } from './util.js';
 import { getData } from './api.js';
 import { renderAds } from './map-render.js';
-import { showErrorMessage } from './util.js';
-import { debounce } from './util.js';
+import { showErrorMessage, debounce } from './util.js';
 
 const SIMILAR_ADS_COUNT = 10;
 const MESSAGE_TEXT = 'Объявления под заданные фильтры отсутствуют, будут показаны 10 случайных объявлений';

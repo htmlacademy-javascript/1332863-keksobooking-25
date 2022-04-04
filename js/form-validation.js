@@ -1,6 +1,7 @@
 import { sendData } from './api.js';
 import { renderRandomAds } from './map-filters.js';
 import { resetMap } from './map-render.js';
+import { disableButton, enableButton } from './forms-state.js';
 
 const MAXIMUM_PRICE = 100000;
 const WHOLESALE_OFFER = '100';
@@ -121,18 +122,62 @@ const capacityErrorMessage = () => {
 
 pristine.addValidator(capacity, validateCapacity, capacityErrorMessage);
 
+const successMessage = document.querySelector('#success').content.querySelector('.success');
+const errorMessage = document.querySelector('#error').content.querySelector('.error');
+const errorButton = errorMessage.querySelector('.error__button');
+
+const onSuccess = () => {
+  document.body.insertAdjacentElement('beforeend', successMessage);
+
+  successMessage.addEventListener('click', () => successMessage.remove());
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      successMessage.remove();
+    }
+  });
+};
+
+const onFail = () => {
+  document.body.insertAdjacentElement('beforeend', errorMessage);
+
+  errorButton.focus();
+  errorButton.addEventListener('click', () => errorMessage.remove());
+  errorMessage.addEventListener('click', () => errorMessage.remove());
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      errorMessage.remove();
+    }
+  });
+};
+
 form.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   if (pristine.validate()) {
-    mapFilters.reset();
-    renderRandomAds();
-    resetMap();
     const formData = new FormData(evt.target);
-    sendData(formData, submitButton);
-    evt.target.reset();
-    sliderElement.noUiSlider.set(0);
-    price.placeholder = '1000';
+    disableButton(submitButton);
+    sendData(formData)
+      .then((response) => {
+        if (response.ok) {
+          onSuccess();
+          form.reset();
+          resetMap();
+          mapFilters.reset();
+          renderRandomAds();
+          enableButton(submitButton);
+          sliderElement.noUiSlider.set(0);
+          price.placeholder = '1000';
+        } else {
+          onFail();
+          enableButton(submitButton);
+        }
+      })
+      .catch(() => {
+        onFail();
+        enableButton(submitButton);
+      });
   }
 });
 
