@@ -7,7 +7,6 @@ const CITY_CENTER_LONGITUDE = 139.75383;
 const MAP_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const MAP_ATTRIBUTES = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-const resetButton = document.querySelector('.ad-form__reset');
 const addressField = document.querySelector('#address');
 
 disableForms();
@@ -49,7 +48,7 @@ mainMarker.on('moveend', (evt) => {
   addressField.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 });
 
-resetButton.addEventListener('click', () => {
+const resetMap = () => {
   mainMarker.setLatLng({
     lat: CITY_CENTER_LATITUDE,
     lng: CITY_CENTER_LONGITUDE,
@@ -62,7 +61,8 @@ resetButton.addEventListener('click', () => {
     },
     MAP_SCALE,
   );
-});
+};
+
 
 const commonIcon = L.icon(createPinIcon('img/pin.svg', [40, 40], [20, 40]));
 
@@ -75,4 +75,4 @@ const renderAds = (adsData) => {
   });
 };
 
-export { renderAds };
+export { renderAds, resetMap };

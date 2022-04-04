@@ -1,5 +1,6 @@
 import { sendData } from './api.js';
 import { renderRandomAds } from './map-filters.js';
+import { resetMap } from './map-render.js';
 
 const MAXIMUM_PRICE = 100000;
 const WHOLESALE_OFFER = '100';
@@ -122,7 +123,11 @@ pristine.addValidator(capacity, validateCapacity, capacityErrorMessage);
 
 form.addEventListener('submit', (evt) => {
   evt.preventDefault();
+
   if (pristine.validate()) {
+    mapFilters.reset();
+    renderRandomAds();
+    resetMap();
     const formData = new FormData(evt.target);
     sendData(formData, submitButton);
     evt.target.reset();
@@ -136,4 +141,5 @@ resetButton.addEventListener('click', () => {
   price.placeholder = '1000';
   mapFilters.reset();
   renderRandomAds();
+  resetMap();
 });
