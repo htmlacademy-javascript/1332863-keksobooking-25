@@ -1,7 +1,8 @@
 import { sendData } from './api.js';
-import { renderRandomAds } from './map-filters.js';
-import { resetMap } from './map-render.js';
+import { resetMap, renderAds } from './map-render.js';
 import { disableButton, enableButton } from './forms-state.js';
+import { getFirstTenAds } from './map-filters.js';
+import { removeOnPushBtn } from './util.js';
 
 const MAXIMUM_PRICE = 100000;
 const WHOLESALE_OFFER = '100';
@@ -130,12 +131,15 @@ const onSuccess = () => {
   document.body.insertAdjacentElement('beforeend', successMessage);
 
   successMessage.addEventListener('click', () => successMessage.remove());
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      successMessage.remove();
-    }
-  });
+  document.addEventListener('keydown', (evt) => removeOnPushBtn('Escape', successMessage, evt));
+
+  form.reset();
+  resetMap();
+  mapFilters.reset();
+  renderAds(getFirstTenAds());
+  enableButton(submitButton);
+  sliderElement.noUiSlider.set(0);
+  price.placeholder = '1000';
 };
 
 const onFail = () => {
@@ -144,12 +148,8 @@ const onFail = () => {
   errorButton.focus();
   errorButton.addEventListener('click', () => errorMessage.remove());
   errorMessage.addEventListener('click', () => errorMessage.remove());
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      errorMessage.remove();
-    }
-  });
+  document.addEventListener('keydown', (evt) => removeOnPushBtn('Escape', errorMessage, evt));
+  enableButton(submitButton);
 };
 
 form.addEventListener('submit', (evt) => {
@@ -162,21 +162,10 @@ form.addEventListener('submit', (evt) => {
       .then((response) => {
         if (response.ok) {
           onSuccess();
-          form.reset();
-          resetMap();
-          mapFilters.reset();
-          renderRandomAds();
-          enableButton(submitButton);
-          sliderElement.noUiSlider.set(0);
-          price.placeholder = '1000';
-        } else {
-          onFail();
-          enableButton(submitButton);
         }
       })
       .catch(() => {
         onFail();
-        enableButton(submitButton);
       });
   }
 });
@@ -185,6 +174,6 @@ resetButton.addEventListener('click', () => {
   sliderElement.noUiSlider.set(0);
   price.placeholder = '1000';
   mapFilters.reset();
-  renderRandomAds();
+  renderAds(getFirstTenAds());
   resetMap();
 });

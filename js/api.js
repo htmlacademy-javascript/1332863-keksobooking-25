@@ -11,8 +11,10 @@ const alertNotDownloadedData = () => {
   showErrorMessage(MESSAGE_TEXT, ALERT_SHOW_TIME);
 };
 
-const getData = () => fetch(URL_FOR_GET).then((response) => response.ok ? response.json(): alertNotDownloadedData());
+const getData = () => fetch(URL_FOR_GET)
+  .then((response) => response.json())
+  .catch(alertNotDownloadedData);
 
-const sendData = (data) => fetch(URL_FOR_SEND, {method: 'POST', body: data});
+const sendData = (data) => fetch(URL_FOR_SEND, { method: 'POST', body: data }).catch();
 
 export { getData, sendData };
