@@ -1,41 +1,21 @@
-import { getRandomInt } from './util.js';
 import { getData } from './api.js';
 import { renderAds } from './map-render.js';
-import { showErrorMessage } from './util.js';
 import { debounce } from './util.js';
 
 const SIMILAR_ADS_COUNT = 10;
-const MESSAGE_TEXT = 'Объявления под заданные фильтры отсутствуют, будут показаны 10 случайных объявлений';
-const ALERT_SHOW_TIME = 5000;
 const DEBOUNCE_TIMEOUT = 500;
+const NON_CHECKBOX_FILTERS = 4;
 
 const mapForm = document.querySelector('.map__filters');
-const filters = mapForm.querySelectorAll('[name^=housing]');
-const features = mapForm.querySelectorAll('[name=features]');
 
-const adsData = getData().then((ads) => ads.slice());
+let ads = [];
+const getFirstTenAds = () => ads.slice(0, SIMILAR_ADS_COUNT);
 
-const getRandomIndex = (arrLength) => {
-  const randomIndex = getRandomInt(0, arrLength) - SIMILAR_ADS_COUNT;
-  return randomIndex < 0 ? 0 : randomIndex;
-};
-
-const renderRandomAds = () => {
-  adsData
-    .then((data) => {
-      const randomIndex = getRandomIndex(data.length);
-      const randomAds = data.slice(randomIndex, randomIndex + SIMILAR_ADS_COUNT);
-      return randomAds;
-    })
-    .then((randomAds) => renderAds(randomAds));
-};
-
-renderRandomAds();
-
-const alertNotSuchAds = () => {
-  showErrorMessage(MESSAGE_TEXT, ALERT_SHOW_TIME);
-  renderRandomAds();
-};
+getData()
+  .then((gettedAds) => {
+    ads = gettedAds;
+  })
+  .then(() => renderAds(getFirstTenAds()));
 
 const priceRange = {
   low: { min: 0, max: 10000 },
@@ -43,62 +23,51 @@ const priceRange = {
   high: { min: 50001, max: Infinity },
 };
 
+const hasAllFeatures = (featuresArr, filterArr) => {
+  if (featuresArr) {
+    let match = 0;
+    for (let i = NON_CHECKBOX_FILTERS; i < filterArr.length; i++) {
+      if (featuresArr.includes(filterArr[i])) {
+        match++;
+      }
+    }
+
+    if (match === filterArr.length - NON_CHECKBOX_FILTERS) {
+      return true;
+    }
+
+    return false;
+  }
+
+  return false;
+};
+
 const renderFilteredAds = () => {
+
   const activeFilters = [];
 
-  filters.forEach((filter) => {
-    if (filter.name === 'housing-rooms' && filter.value !== 'any') {
-      activeFilters.push(`${filter.value}rooms`);
-    } else if (filter.name === 'housing-guests' && filter.value !== 'any') {
-      activeFilters.push(`${filter.value}guests`);
-    } else if (filter.value !== 'any') {
-      activeFilters.push(filter.value);
-    }
-  });
+  for (const formValue of new FormData(mapForm).entries()) {
+    activeFilters.push(formValue[1]);
+  }
 
-  features.forEach((feature) => feature.checked ? activeFilters.push(feature.value) : activeFilters);
+  const filterAds = (ad) => (
+    (activeFilters[0] === 'any' || activeFilters[0] === ad.offer.type) &&
+    (activeFilters[1] === 'any' || (ad.offer.price >= priceRange[activeFilters[1]].min && ad.offer.price <= priceRange[activeFilters[1]].max)) &&
+    (activeFilters[2] === 'any' || Number(activeFilters[2]) === ad.offer.rooms) &&
+    (activeFilters[3] === 'any' || Number(activeFilters[3]) === ad.offer.guests) &&
+    (activeFilters.length > NON_CHECKBOX_FILTERS ? hasAllFeatures(ad.offer.features, activeFilters) : true)
+  );
 
-  const rankedAds = [];
+  const filteredAds = ads.filter((ad) => filterAds(ad));
 
-  adsData
-    .then((ads) =>
-      ads.forEach((ad) => {
-        ad.rank = 0;
 
-        if (activeFilters.some((value) => ad.offer.type === value)) {
-          ad.rank++;
-        }
-        if (activeFilters.some((value) => value.endsWith('rooms') ? ad.offer.rooms === parseInt(value, 10) : false)) {
-          ad.rank++;
-        }
-        if (activeFilters.some((value) => value.endsWith('guests') ? ad.offer.guests === parseInt(value, 10) : false)) {
-          ad.rank++;
-        }
-
-        activeFilters.some((value) => {
-          if (value === 'low' || value === 'middle' || value === 'high') {
-            if (ad.offer.price >= priceRange[value].min && ad.offer.price <= priceRange[value].max) {
-              ad.rank++;
-            }
-          }
-        });
-
-        activeFilters.some((value) => {
-          if (ad.offer.features) {
-            ad.offer.features.forEach((feature) => (feature === value ? ad.rank++ : ad.rank));
-          }
-        });
-
-        if (ad.rank === activeFilters.length) {
-          rankedAds.push(ad);
-        }
-      }),
-    )
-    .then(() => rankedAds.sort((prev, next) => next.rank - prev.rank))
-    .then(() => rankedAds.slice(0, SIMILAR_ADS_COUNT))
-    .then((filteredAds) => filteredAds.length ? renderAds(filteredAds) : alertNotSuchAds());
+  if (activeFilters.every((filter) => filter === 'any')) {
+    renderAds(getFirstTenAds());
+  } else {
+    renderAds(filteredAds.slice(0, SIMILAR_ADS_COUNT));
+  }
 };
 
 mapForm.addEventListener('change', debounce(renderFilteredAds, DEBOUNCE_TIMEOUT));
 
-export { renderRandomAds };
+export { getFirstTenAds };

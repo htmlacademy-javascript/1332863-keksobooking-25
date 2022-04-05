@@ -59,9 +59,9 @@ const makeGallery = (node, photoListData) => {
       const templateImg = node.querySelector('img');
       templateImg.remove();
       node.insertAdjacentHTML('afterbegin', photoListData.join(''));
-    } else {
-      node.remove();
     }
+  } else {
+    node.remove();
   }
 };
 

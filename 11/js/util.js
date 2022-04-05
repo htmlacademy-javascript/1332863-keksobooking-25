@@ -1,3 +1,5 @@
+const DEFAULT_DEBOUNCE_DELAY = 500;
+
 const getRandomInt = (firstNumber, secondNumber) => {
   const max = Math.floor(Math.max(Math.abs(firstNumber), Math.abs(secondNumber)));
   const min = Math.ceil(Math.min(Math.abs(firstNumber), Math.abs(secondNumber)));
@@ -40,7 +42,14 @@ const showErrorMessage = (message, showTime) => {
   }, showTime);
 };
 
-const debounce = (callback, timeoutDelay = 500) => {
+const removeOnPushBtn = (buttonName, removingObj, evt) => {
+  if (evt.key === buttonName) {
+    evt.preventDefault();
+    removingObj.remove();
+  }
+};
+
+const debounce = (callback, timeoutDelay = DEFAULT_DEBOUNCE_DELAY) => {
   let timeoutId;
 
   return (...rest) => {
@@ -50,4 +59,4 @@ const debounce = (callback, timeoutDelay = 500) => {
   };
 };
 
-export { getRandomInt, getRandomFloat, getRandomIndex, showErrorMessage, debounce };
+export { getRandomInt, getRandomFloat, getRandomIndex, showErrorMessage, debounce, removeOnPushBtn };

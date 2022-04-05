@@ -1,6 +1,8 @@
 import { sendData } from './api.js';
-import { renderRandomAds } from './map-filters.js';
-import { resetMap } from './map-render.js';
+import { resetMap, renderAds } from './map-render.js';
+import { disableButton, enableButton } from './forms-state.js';
+import { getFirstTenAds } from './map-filters.js';
+import { removeOnPushBtn } from './util.js';
 
 const MAXIMUM_PRICE = 100000;
 const WHOLESALE_OFFER = '100';
@@ -121,18 +123,50 @@ const capacityErrorMessage = () => {
 
 pristine.addValidator(capacity, validateCapacity, capacityErrorMessage);
 
+const successMessage = document.querySelector('#success').content.querySelector('.success');
+const errorMessage = document.querySelector('#error').content.querySelector('.error');
+const errorButton = errorMessage.querySelector('.error__button');
+
+const onSuccess = () => {
+  document.body.insertAdjacentElement('beforeend', successMessage);
+
+  successMessage.addEventListener('click', () => successMessage.remove());
+  document.addEventListener('keydown', (evt) => removeOnPushBtn('Escape', successMessage, evt));
+
+  form.reset();
+  resetMap();
+  mapFilters.reset();
+  renderAds(getFirstTenAds());
+  enableButton(submitButton);
+  sliderElement.noUiSlider.set(0);
+  price.placeholder = '1000';
+};
+
+const onFail = () => {
+  document.body.insertAdjacentElement('beforeend', errorMessage);
+
+  errorButton.focus();
+  errorButton.addEventListener('click', () => errorMessage.remove());
+  errorMessage.addEventListener('click', () => errorMessage.remove());
+  document.addEventListener('keydown', (evt) => removeOnPushBtn('Escape', errorMessage, evt));
+  enableButton(submitButton);
+};
+
 form.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   if (pristine.validate()) {
-    mapFilters.reset();
-    renderRandomAds();
-    resetMap();
     const formData = new FormData(evt.target);
-    sendData(formData, submitButton);
-    evt.target.reset();
-    sliderElement.noUiSlider.set(0);
-    price.placeholder = '1000';
+    disableButton(submitButton);
+    sendData(formData)
+      .then((response) => {
+        if (response.ok) {
+          onSuccess();
+        }
+      })
+      .catch(() => {
+        onFail();
+      });
   }
 });
 
@@ -140,6 +174,6 @@ resetButton.addEventListener('click', () => {
   sliderElement.noUiSlider.set(0);
   price.placeholder = '1000';
   mapFilters.reset();
-  renderRandomAds();
+  renderAds(getFirstTenAds());
   resetMap();
 });
