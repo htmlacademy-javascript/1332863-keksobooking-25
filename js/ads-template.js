@@ -1,4 +1,4 @@
-import {pluralizeRus} from './pluralize-rus.js';
+import { pluralizeRus } from './pluralize-rus.js';
 
 const offerType = {
   palace: 'Дворец',
@@ -59,9 +59,9 @@ const makeGallery = (node, photoListData) => {
       const templateImg = node.querySelector('img');
       templateImg.remove();
       node.insertAdjacentHTML('afterbegin', photoListData.join(''));
-    } else {
-      node.remove();
     }
+  } else {
+    node.remove();
   }
 };
 
@@ -96,4 +96,4 @@ const createSimilarAd = (adData) => {
   return ad;
 };
 
-export {createSimilarAd};
+export { createSimilarAd };

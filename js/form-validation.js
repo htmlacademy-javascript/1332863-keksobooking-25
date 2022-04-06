@@ -1,10 +1,15 @@
-import { sendData } from './load.js';
+import { sendData } from './api.js';
+import { resetMap, renderAds } from './map-render.js';
+import { disableButton, enableButton } from './forms-state.js';
+import { getFirstTenAds } from './map-filters.js';
+import { removeOnPushBtn } from './util.js';
 
 const MAXIMUM_PRICE = 100000;
 const WHOLESALE_OFFER = '100';
 const ZERO_GUESTS = '0';
 
 const form = document.querySelector('.ad-form');
+const mapFilters = document.querySelector('.map__filters');
 const types = form.querySelector('#type');
 const price = form.querySelector('#price');
 const rooms = form.querySelector('#room_number');
@@ -13,7 +18,7 @@ const timein = form.querySelector('#timein');
 const timeout = form.querySelector('#timeout');
 const resetButton = form.querySelector('.ad-form__reset');
 const submitButton = form.querySelector('.ad-form__submit');
-const sliderElement = document.querySelector('.ad-form__slider');
+const sliderElement = form.querySelector('.ad-form__slider');
 
 const pristine = new Pristine(form, {
   classTo: 'ad-form__element',
@@ -118,18 +123,57 @@ const capacityErrorMessage = () => {
 
 pristine.addValidator(capacity, validateCapacity, capacityErrorMessage);
 
+const successMessage = document.querySelector('#success').content.querySelector('.success');
+const errorMessage = document.querySelector('#error').content.querySelector('.error');
+const errorButton = errorMessage.querySelector('.error__button');
+
+const onSuccess = () => {
+  document.body.insertAdjacentElement('beforeend', successMessage);
+
+  successMessage.addEventListener('click', () => successMessage.remove());
+  document.addEventListener('keydown', (evt) => removeOnPushBtn('Escape', successMessage, evt));
+
+  form.reset();
+  resetMap();
+  mapFilters.reset();
+  renderAds(getFirstTenAds());
+  enableButton(submitButton);
+  sliderElement.noUiSlider.set(0);
+  price.placeholder = '1000';
+};
+
+const onFail = () => {
+  document.body.insertAdjacentElement('beforeend', errorMessage);
+
+  errorButton.focus();
+  errorButton.addEventListener('click', () => errorMessage.remove());
+  errorMessage.addEventListener('click', () => errorMessage.remove());
+  document.addEventListener('keydown', (evt) => removeOnPushBtn('Escape', errorMessage, evt));
+  enableButton(submitButton);
+};
+
 form.addEventListener('submit', (evt) => {
   evt.preventDefault();
+
   if (pristine.validate()) {
     const formData = new FormData(evt.target);
-    sendData(formData, submitButton);
-    evt.target.reset();
-    sliderElement.noUiSlider.set(0);
-    price.placeholder = '1000';
+    disableButton(submitButton);
+    sendData(formData)
+      .then((response) => {
+        if (response.ok) {
+          onSuccess();
+        }
+      })
+      .catch(() => {
+        onFail();
+      });
   }
 });
 
 resetButton.addEventListener('click', () => {
   sliderElement.noUiSlider.set(0);
   price.placeholder = '1000';
+  mapFilters.reset();
+  renderAds(getFirstTenAds());
+  resetMap();
 });

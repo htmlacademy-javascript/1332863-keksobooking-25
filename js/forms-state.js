@@ -39,4 +39,4 @@ const enableForms = () => {
   slider.removeAttribute('disabled');
 };
 
-export {disableForms, enableForms, disableMapForm, disableButton, enableButton};
+export { disableForms, enableForms, disableMapForm, disableButton, enableButton };
