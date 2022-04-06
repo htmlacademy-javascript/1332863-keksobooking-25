@@ -37,19 +37,15 @@ const checkAdProperties = (filterName, filterValue, adObj) => {
 
 const renderFilteredAds = () => {
 
-  const activeFilters = {};
-
   const filteredAds = ads.filter((ad) => {
+    const resultAfterAllChecks = [];
 
     for (const formValue of new FormData(mapForm).entries()) {
-      activeFilters[formValue[0]] = checkAdProperties(...formValue, ad);
+      resultAfterAllChecks.push(checkAdProperties(...formValue, ad));
     }
 
-    if (!Object.values(activeFilters).includes(false))  {
-      return true;
-    }
+    return !resultAfterAllChecks.includes(false);
 
-    return false;
   });
 
   renderAds(filteredAds.slice(0, SIMILAR_ADS_COUNT));
