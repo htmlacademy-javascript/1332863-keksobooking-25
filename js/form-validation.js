@@ -1,9 +1,10 @@
 import { sendData } from './api.js';
 import { resetMap, renderAds } from './map-render.js';
 import { disableButton, enableButton } from './forms-state.js';
-import { getFirstTenAds } from './map-filters.js';
+import { getDefaultAds } from './map-filters.js';
 import { removeOnPushBtn } from './util.js';
 
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const MAXIMUM_PRICE = 100000;
 const WHOLESALE_OFFER = '100';
 const ZERO_GUESTS = '0';
@@ -19,6 +20,47 @@ const timeout = form.querySelector('#timeout');
 const resetButton = form.querySelector('.ad-form__reset');
 const submitButton = form.querySelector('.ad-form__submit');
 const sliderElement = form.querySelector('.ad-form__slider');
+const avatarDowloadField = form.querySelector('.ad-form__field');
+const avatarChooser = avatarDowloadField.querySelector('.ad-form-header__input');
+const avatarPreview = form.querySelector('.ad-form-header__preview > img');
+const houseImgDowloadField = form.querySelector('.ad-form__upload');
+const houseImgChooser = houseImgDowloadField.querySelector('.ad-form__input');
+const houseImgContainer = form.querySelector('.ad-form__photo');
+
+avatarDowloadField.addEventListener('change', () => {
+  const avatarImg = avatarChooser.files[0];
+  const fileName = avatarImg.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    avatarPreview.src = URL.createObjectURL(avatarImg);
+  }
+});
+
+const houseImgPreview = document.createElement('img');
+houseImgContainer.insertAdjacentElement('afterbegin', houseImgPreview);
+
+houseImgDowloadField.addEventListener('change', () => {
+  const houseImg = houseImgChooser.files[0];
+  const fileName = houseImg.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    houseImgPreview.src = URL.createObjectURL(houseImg);
+    houseImgPreview.style.width = '100%';
+    houseImgPreview.style.height = '100%';
+  }
+});
+
+const removePreviews = () => {
+  avatarPreview.src = 'img/muffin-grey.svg';
+
+  houseImgPreview.src = '';
+  houseImgPreview.style.width = '';
+  houseImgPreview.style.height = '';
+};
 
 const pristine = new Pristine(form, {
   classTo: 'ad-form__element',
@@ -39,7 +81,7 @@ const HOUSING_TYPE = {
   flat: 1000,
   hotel: 3000,
   house: 5000,
-  palace: 10000
+  palace: 10000,
 };
 
 noUiSlider.create(sliderElement, {
@@ -63,7 +105,6 @@ types.addEventListener('change', () => {
   price.min = minPrice;
   price.placeholder = minPrice;
 });
-
 
 sliderElement.noUiSlider.on('slide', () => {
   price.value = sliderElement.noUiSlider.get();
@@ -127,6 +168,15 @@ const successMessage = document.querySelector('#success').content.querySelector(
 const errorMessage = document.querySelector('#error').content.querySelector('.error');
 const errorButton = errorMessage.querySelector('.error__button');
 
+const resetToDefault = () => {
+  removePreviews();
+  price.placeholder = '1000';
+  sliderElement.noUiSlider.set(0);
+  resetMap();
+  mapFilters.reset();
+  renderAds(getDefaultAds());
+};
+
 const onSuccess = () => {
   document.body.insertAdjacentElement('beforeend', successMessage);
 
@@ -134,12 +184,8 @@ const onSuccess = () => {
   document.addEventListener('keydown', (evt) => removeOnPushBtn('Escape', successMessage, evt));
 
   form.reset();
-  resetMap();
-  mapFilters.reset();
-  renderAds(getFirstTenAds());
+  resetToDefault();
   enableButton(submitButton);
-  sliderElement.noUiSlider.set(0);
-  price.placeholder = '1000';
 };
 
 const onFail = () => {
@@ -162,6 +208,8 @@ form.addEventListener('submit', (evt) => {
       .then((response) => {
         if (response.ok) {
           onSuccess();
+        } else {
+          throw new Error();
         }
       })
       .catch(() => {
@@ -170,10 +218,4 @@ form.addEventListener('submit', (evt) => {
   }
 });
 
-resetButton.addEventListener('click', () => {
-  sliderElement.noUiSlider.set(0);
-  price.placeholder = '1000';
-  mapFilters.reset();
-  renderAds(getFirstTenAds());
-  resetMap();
-});
+resetButton.addEventListener('click', () => resetToDefault());
