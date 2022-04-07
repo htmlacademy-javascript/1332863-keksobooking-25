@@ -214,7 +214,6 @@ form.addEventListener('submit', (evt) => {
       })
       .catch(() => {
         onFail();
-        enableButton();
       });
   }
 });
