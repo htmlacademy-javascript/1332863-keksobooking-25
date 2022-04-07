@@ -4,6 +4,7 @@ import { disableButton, enableButton } from './forms-state.js';
 import { getDefaultAds } from './map-filters.js';
 import { removeOnPushBtn } from './util.js';
 
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const MAXIMUM_PRICE = 100000;
 const WHOLESALE_OFFER = '100';
 const ZERO_GUESTS = '0';
@@ -19,6 +20,39 @@ const timeout = form.querySelector('#timeout');
 const resetButton = form.querySelector('.ad-form__reset');
 const submitButton = form.querySelector('.ad-form__submit');
 const sliderElement = form.querySelector('.ad-form__slider');
+const avatarDowloadField = form.querySelector('.ad-form__field');
+const avatarChooser = avatarDowloadField.querySelector('.ad-form-header__input');
+const avatarPreview = form.querySelector('.ad-form-header__preview > img');
+const houseImgDowloadField = form.querySelector('.ad-form__upload');
+const houseImgChooser = houseImgDowloadField.querySelector('.ad-form__input');
+const houseImgContainer = form.querySelector('.ad-form__photo');
+
+avatarDowloadField.addEventListener('change', () => {
+  const avatarImg = avatarChooser.files[0];
+  const fileName = avatarImg.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    avatarPreview.src = URL.createObjectURL(avatarImg);
+  }
+});
+
+const houseImgPreview = document.createElement('img');
+houseImgContainer.insertAdjacentElement('afterbegin', houseImgPreview);
+
+houseImgDowloadField.addEventListener('change', () => {
+  const houseImg = houseImgChooser.files[0];
+  const fileName = houseImg.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    houseImgPreview.src = URL.createObjectURL(houseImg);
+    houseImgPreview.style.width = '100%';
+    houseImgPreview.style.height = '100%';
+  }
+});
 
 const pristine = new Pristine(form, {
   classTo: 'ad-form__element',
