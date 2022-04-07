@@ -54,6 +54,14 @@ houseImgDowloadField.addEventListener('change', () => {
   }
 });
 
+const removePreviews = () => {
+  avatarPreview.src = 'img/muffin-grey.svg';
+
+  houseImgPreview.src = '';
+  houseImgPreview.style.width = '';
+  houseImgPreview.style.height = '';
+};
+
 const pristine = new Pristine(form, {
   classTo: 'ad-form__element',
   errorTextParent: 'ad-form__element',
@@ -160,6 +168,15 @@ const successMessage = document.querySelector('#success').content.querySelector(
 const errorMessage = document.querySelector('#error').content.querySelector('.error');
 const errorButton = errorMessage.querySelector('.error__button');
 
+const resetToDefault = () => {
+  removePreviews();
+  price.placeholder = '1000';
+  sliderElement.noUiSlider.set(0);
+  resetMap();
+  mapFilters.reset();
+  renderAds(getDefaultAds());
+};
+
 const onSuccess = () => {
   document.body.insertAdjacentElement('beforeend', successMessage);
 
@@ -167,12 +184,8 @@ const onSuccess = () => {
   document.addEventListener('keydown', (evt) => removeOnPushBtn('Escape', successMessage, evt));
 
   form.reset();
-  resetMap();
-  mapFilters.reset();
-  renderAds(getDefaultAds());
+  resetToDefault();
   enableButton(submitButton);
-  sliderElement.noUiSlider.set(0);
-  price.placeholder = '1000';
 };
 
 const onFail = () => {
@@ -195,18 +208,15 @@ form.addEventListener('submit', (evt) => {
       .then((response) => {
         if (response.ok) {
           onSuccess();
+        } else {
+          throw new Error();
         }
       })
       .catch(() => {
         onFail();
+        enableButton();
       });
   }
 });
 
-resetButton.addEventListener('click', () => {
-  sliderElement.noUiSlider.set(0);
-  price.placeholder = '1000';
-  mapFilters.reset();
-  renderAds(getDefaultAds());
-  resetMap();
-});
+resetButton.addEventListener('click', () => resetToDefault());
