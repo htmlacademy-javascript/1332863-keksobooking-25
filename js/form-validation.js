@@ -1,7 +1,7 @@
 import { sendData } from './api.js';
 import { resetMap, renderAds } from './map-render.js';
 import { disableButton, enableButton } from './forms-state.js';
-import { getFirstTenAds } from './map-filters.js';
+import { getDefaultAds } from './map-filters.js';
 import { removeOnPushBtn } from './util.js';
 
 const MAXIMUM_PRICE = 100000;
@@ -39,7 +39,7 @@ const HOUSING_TYPE = {
   flat: 1000,
   hotel: 3000,
   house: 5000,
-  palace: 10000
+  palace: 10000,
 };
 
 noUiSlider.create(sliderElement, {
@@ -63,7 +63,6 @@ types.addEventListener('change', () => {
   price.min = minPrice;
   price.placeholder = minPrice;
 });
-
 
 sliderElement.noUiSlider.on('slide', () => {
   price.value = sliderElement.noUiSlider.get();
@@ -136,7 +135,7 @@ const onSuccess = () => {
   form.reset();
   resetMap();
   mapFilters.reset();
-  renderAds(getFirstTenAds());
+  renderAds(getDefaultAds());
   enableButton(submitButton);
   sliderElement.noUiSlider.set(0);
   price.placeholder = '1000';
@@ -174,6 +173,6 @@ resetButton.addEventListener('click', () => {
   sliderElement.noUiSlider.set(0);
   price.placeholder = '1000';
   mapFilters.reset();
-  renderAds(getFirstTenAds());
+  renderAds(getDefaultAds());
   resetMap();
 });
